@@ -1,0 +1,782 @@
+/* ==========================================================================
+   GLOBAL CSS — Fikry Zulkifly
+   Design system tokens migrated from Webflow.
+   Fluid values use the range: 20rem (320px) → 90rem (1440px).
+   ========================================================================== */
+
+/* ==========================================================================
+   FONTS — General Sans
+   ========================================================================== */
+
+@font-face {
+  font-family: "General Sans";
+  src: url("/fonts/GeneralSans-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "General Sans";
+  src: url("/fonts/GeneralSans-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "General Sans";
+  src: url("/fonts/GeneralSans-Semibold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "General Sans";
+  src: url("/fonts/GeneralSans-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ==========================================================================
+   DESIGN TOKENS
+   ========================================================================== */
+
+:root {
+  /* --------------------------------------------------------------------------
+     LAYOUT — Viewport & grid
+     -------------------------------------------------------------------------- */
+
+  --viewport-min: 20; /* rem — 320px */
+  --viewport-max: 90; /* rem — 1440px */
+
+  --max-width-main: calc(var(--viewport-max) * 1rem); /* 90rem */
+  --max-width-small: 50rem;
+  --max-width-full: 100%;
+
+  --column-count: 12;
+
+  /* Fluid margin: 1rem → 3rem */
+  --margin: clamp(
+    1rem,
+    calc(
+      1rem + (3 - 1) / (var(--viewport-max) - var(--viewport-min)) * 100vw -
+        (3 - 1) / (var(--viewport-max) - var(--viewport-min)) *
+        var(--viewport-min) * 1rem
+    ),
+    3rem
+  );
+
+  /* Fluid gutter: 1rem → 2rem */
+  --gutter: clamp(
+    1rem,
+    calc(
+      1rem + (2 - 1) / (var(--viewport-max) - var(--viewport-min)) * 100vw -
+        (2 - 1) / (var(--viewport-max) - var(--viewport-min)) *
+        var(--viewport-min) * 1rem
+    ),
+    2rem
+  );
+
+  /* Derived column width */
+  --column-width: calc(
+    (
+        min(var(--max-width-main), 100% - var(--margin) * 2) -
+          (var(--gutter) * (var(--column-count) - 1))
+      ) /
+      var(--column-count)
+  );
+
+  /* --------------------------------------------------------------------------
+     COLORS — Primitive swatches
+     -------------------------------------------------------------------------- */
+
+  /* Neutrals */
+  --color-light-100: #f4f4f4;
+  --color-light-200: #e0e0e0;
+  --color-dark-800: #454545;
+  --color-dark-900: #333;
+  --color-transparent: transparent;
+
+  /* Opacity variants */
+  --color-light-100-o20: color-mix(
+    in srgb,
+    var(--color-light-100) 20%,
+    transparent
+  );
+  --color-dark-900-o20: color-mix(
+    in srgb,
+    var(--color-dark-900) 20%,
+    transparent
+  );
+
+  /* Brand — base */
+  --color-brand: #00509d;
+
+  /* Brand scale (lightness steps via color-mix) */
+  --color-brand-100: color-mix(in srgb, var(--color-brand), white 80%);
+  --color-brand-200: color-mix(in srgb, var(--color-brand), white 60%);
+  --color-brand-300: color-mix(in srgb, var(--color-brand), white 40%);
+  --color-brand-400: color-mix(in srgb, var(--color-brand), white 20%);
+  --color-brand-500: var(--color-brand);
+  --color-brand-600: color-mix(in srgb, var(--color-brand), black 20%);
+  --color-brand-700: color-mix(in srgb, var(--color-brand), black 40%);
+  --color-brand-800: color-mix(in srgb, var(--color-brand), black 60%);
+  --color-brand-900: color-mix(in srgb, var(--color-brand), black 80%);
+
+  /* Text on brand backgrounds */
+  --color-brand-text: var(--color-light-100);
+  --color-brand-text-o20: color-mix(
+    in srgb,
+    var(--color-brand-text) 20%,
+    transparent
+  );
+
+  /* --------------------------------------------------------------------------
+     TYPOGRAPHY
+     -------------------------------------------------------------------------- */
+
+  /* Font family */
+  --font-family: "General Sans", Arial, sans-serif;
+
+  /* Font weights */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+
+  /* Font trim (cap-height / baseline correction) */
+  --font-trim-top: 0.34em;
+  --font-trim-bottom: 0.39em;
+
+  /* Fluid font sizes
+     Formula: clamp(MIN, MIN + (MAX - MIN) * (100vw - VPmin) / (VPmax - VPmin), MAX)
+     Simplified to the canonical Webflow clamp form.
+  */
+
+  /* display: 4rem → 7rem */
+  --font-size-display: clamp(
+    4rem,
+    calc(
+      4rem + (7 - 4) / (var(--viewport-max) - var(--viewport-min)) * 100vw -
+        (7 - 4) / (var(--viewport-max) - var(--viewport-min)) *
+        var(--viewport-min) * 1rem
+    ),
+    7rem
+  );
+
+  /* h1: 3rem → 5rem */
+  --font-size-h1: clamp(
+    3rem,
+    calc(
+      3rem + (5 - 3) / (var(--viewport-max) - var(--viewport-min)) * 100vw -
+        (5 - 3) / (var(--viewport-max) - var(--viewport-min)) *
+        var(--viewport-min) * 1rem
+    ),
+    5rem
+  );
+
+  /* h2: 2.5rem → 4rem */
+  --font-size-h2: clamp(
+    2.5rem,
+    calc(
+      2.5rem + (4 - 2.5) / (var(--viewport-max) - var(--viewport-min)) * 100vw -
+        (4 - 2.5) / (var(--viewport-max) - var(--viewport-min)) *
+        var(--viewport-min) * 1rem
+    ),
+    4rem
+  );
+
+  /* h3: 2.25rem → 3rem */
+  --font-size-h3: clamp(
+    2.25rem,
+    calc(
+      2.25rem + (3 - 2.25) / (var(--viewport-max) - var(--viewport-min)) *
+        100vw - (3 - 2.25) / (var(--viewport-max) - var(--viewport-min)) *
+        var(--viewport-min) * 1rem
+    ),
+    3rem
+  );
+
+  /* h4: 1.75rem → 2rem */
+  --font-size-h4: clamp(
+    1.75rem,
+    calc(
+      1.75rem + (2 - 1.75) / (var(--viewport-max) - var(--viewport-min)) *
+        100vw - (2 - 1.75) / (var(--viewport-max) - var(--viewport-min)) *
+        var(--viewport-min) * 1rem
+    ),
+    2rem
+  );
+
+  /* h5: 1.375rem → 1.5rem */
+  --font-size-h5: clamp(
+    1.375rem,
+    calc(
+      1.375rem + (1.5 - 1.375) / (var(--viewport-max) - var(--viewport-min)) *
+        100vw - (1.5 - 1.375) / (var(--viewport-max) - var(--viewport-min)) *
+        var(--viewport-min) * 1rem
+    ),
+    1.5rem
+  );
+
+  /* h6 / body: 1rem → 1.125rem */
+  --font-size-h6: clamp(
+    1rem,
+    calc(
+      1rem + (1.125 - 1) / (var(--viewport-max) - var(--viewport-min)) * 100vw -
+        (1.125 - 1) / (var(--viewport-max) - var(--viewport-min)) *
+        var(--viewport-min) * 1rem
+    ),
+    1.125rem
+  );
+  --font-size-body: var(--font-size-h6);
+
+  /* large: 1.125rem → 1.25rem */
+  --font-size-large: clamp(
+    1.125rem,
+    calc(
+      1.125rem + (1.25 - 1.125) / (var(--viewport-max) - var(--viewport-min)) *
+        100vw - (1.25 - 1.125) / (var(--viewport-max) - var(--viewport-min)) *
+        var(--viewport-min) * 1rem
+    ),
+    1.25rem
+  );
+
+  /* small: 0.875rem → 1rem */
+  --font-size-small: clamp(
+    0.875rem,
+    calc(
+      0.875rem + (1 - 0.875) / (var(--viewport-max) - var(--viewport-min)) *
+        100vw - (1 - 0.875) / (var(--viewport-max) - var(--viewport-min)) *
+        var(--viewport-min) * 1rem
+    ),
+    1rem
+  );
+
+  /* Line heights */
+  --line-height-small: 1;
+  --line-height-medium: 1.1;
+  --line-height-large: 1.3;
+  --line-height-huge: 1.5;
+
+  /* Letter spacing */
+  --letter-spacing-tight: -0.02em;
+  --letter-spacing-normal: 0em;
+
+  /* --------------------------------------------------------------------------
+     SPACING — Fluid space scale
+     -------------------------------------------------------------------------- */
+
+  /* space-1: 0.375rem → 0.5rem  (6px → 8px) */
+  --space-1: clamp(
+    0.375rem,
+    calc(
+      0.375rem + (0.5 - 0.375) / (var(--viewport-max) - var(--viewport-min)) *
+        100vw - (0.5 - 0.375) / (var(--viewport-max) - var(--viewport-min)) *
+        var(--viewport-min) * 1rem
+    ),
+    0.5rem
+  );
+
+  /* space-2: 0.625rem → 0.75rem  (10px → 12px) */
+  --space-2: clamp(
+    0.625rem,
+    calc(
+      0.625rem + (0.75 - 0.625) / (var(--viewport-max) - var(--viewport-min)) *
+        100vw - (0.75 - 0.625) / (var(--viewport-max) - var(--viewport-min)) *
+        var(--viewport-min) * 1rem
+    ),
+    0.75rem
+  );
+
+  /* space-3: 0.875rem → 1rem  (14px → 16px) */
+  --space-3: clamp(
+    0.875rem,
+    calc(
+      0.875rem + (1 - 0.875) / (var(--viewport-max) - var(--viewport-min)) *
+        100vw - (1 - 0.875) / (var(--viewport-max) - var(--viewport-min)) *
+        var(--viewport-min) * 1rem
+    ),
+    1rem
+  );
+
+  /* space-4: 1.25rem → 1.5rem  (20px → 24px) */
+  --space-4: clamp(
+    1.25rem,
+    calc(
+      1.25rem + (1.5 - 1.25) / (var(--viewport-max) - var(--viewport-min)) *
+        100vw - (1.5 - 1.25) / (var(--viewport-max) - var(--viewport-min)) *
+        var(--viewport-min) * 1rem
+    ),
+    1.5rem
+  );
+
+  /* space-5: 1.75rem → 2rem  (28px → 32px) */
+  --space-5: clamp(
+    1.75rem,
+    calc(
+      1.75rem + (2 - 1.75) / (var(--viewport-max) - var(--viewport-min)) *
+        100vw - (2 - 1.75) / (var(--viewport-max) - var(--viewport-min)) *
+        var(--viewport-min) * 1rem
+    ),
+    2rem
+  );
+
+  /* space-6: 2rem → 2.5rem  (32px → 40px) */
+  --space-6: clamp(
+    2rem,
+    calc(
+      2rem + (2.5 - 2) / (var(--viewport-max) - var(--viewport-min)) * 100vw -
+        (2.5 - 2) / (var(--viewport-max) - var(--viewport-min)) *
+        var(--viewport-min) * 1rem
+    ),
+    2.5rem
+  );
+
+  /* space-7: 2.25rem → 3rem  (36px → 48px) */
+  --space-7: clamp(
+    2.25rem,
+    calc(
+      2.25rem + (3 - 2.25) / (var(--viewport-max) - var(--viewport-min)) *
+        100vw - (3 - 2.25) / (var(--viewport-max) - var(--viewport-min)) *
+        var(--viewport-min) * 1rem
+    ),
+    3rem
+  );
+
+  /* space-8: 2.5rem → 4rem  (40px → 64px) */
+  --space-8: clamp(
+    2.5rem,
+    calc(
+      2.5rem + (4 - 2.5) / (var(--viewport-max) - var(--viewport-min)) * 100vw -
+        (4 - 2.5) / (var(--viewport-max) - var(--viewport-min)) *
+        var(--viewport-min) * 1rem
+    ),
+    4rem
+  );
+
+  /* --------------------------------------------------------------------------
+     SPACING — Section scale
+     -------------------------------------------------------------------------- */
+
+  --section-none: 0px;
+
+  /* section-small: 3rem → 5rem */
+  --section-small: clamp(
+    3rem,
+    calc(
+      3rem + (5 - 3) / (var(--viewport-max) - var(--viewport-min)) * 100vw -
+        (5 - 3) / (var(--viewport-max) - var(--viewport-min)) *
+        var(--viewport-min) * 1rem
+    ),
+    5rem
+  );
+
+  /* section-main: 4rem → 7rem */
+  --section-main: clamp(
+    4rem,
+    calc(
+      4rem + (7 - 4) / (var(--viewport-max) - var(--viewport-min)) * 100vw -
+        (7 - 4) / (var(--viewport-max) - var(--viewport-min)) *
+        var(--viewport-min) * 1rem
+    ),
+    7rem
+  );
+
+  /* section-large: 5.5rem → 10rem */
+  --section-large: clamp(
+    5.5rem,
+    calc(
+      5.5rem + (10 - 5.5) / (var(--viewport-max) - var(--viewport-min)) *
+        100vw - (10 - 5.5) / (var(--viewport-max) - var(--viewport-min)) *
+        var(--viewport-min) * 1rem
+    ),
+    10rem
+  );
+
+  /* section-page-top: 10rem → 14rem */
+  --section-page-top: clamp(
+    10rem,
+    calc(
+      10rem + (14 - 10) / (var(--viewport-max) - var(--viewport-min)) * 100vw -
+        (14 - 10) / (var(--viewport-max) - var(--viewport-min)) *
+        var(--viewport-min) * 1rem
+    ),
+    14rem
+  );
+
+  /* --------------------------------------------------------------------------
+     BORDERS & RADIUS
+     -------------------------------------------------------------------------- */
+
+  --border-width-main: 0.094rem;
+
+  --radius-main: 1rem;
+  --radius-small: 0.5rem;
+  --radius-round: 100vw;
+
+  /* --------------------------------------------------------------------------
+     FOCUS
+     -------------------------------------------------------------------------- */
+
+  --focus-width: 0.125rem;
+  --focus-offset-outer: 0.1875rem;
+  --focus-offset-inner: calc(var(--focus-width) * -1);
+
+  /* --------------------------------------------------------------------------
+     COMPONENTS — Buttons
+     -------------------------------------------------------------------------- */
+
+  --button-size-medium: 3rem;
+  --button-size-large: 5rem;
+
+  /* --------------------------------------------------------------------------
+     COMPONENTS — Navigation
+     -------------------------------------------------------------------------- */
+
+  --nav-height: 4rem;
+  --nav-banner-height: 2.4rem;
+  --nav-max-width: var(--max-width-main);
+  --nav-radius: var(--radius-small);
+  --nav-spacing-vertical: var(--margin);
+  --nav-spacing-horizontal: var(--margin);
+  --nav-spacing-inner: var(--space-5);
+  --nav-height-total: calc(var(--nav-height) + var(--nav-spacing-vertical));
+  --nav-hamburger-thickness: var(--border-width-main);
+  --nav-hamburger-gap: var(--space-2);
+
+  /* --------------------------------------------------------------------------
+     THEME TOKENS — Light (default)
+     Semantic layer over the primitive swatches.
+     -------------------------------------------------------------------------- */
+
+  --theme-background: var(--color-light-200);
+  --theme-background-2: var(--color-light-100);
+  --theme-text: var(--color-dark-900);
+  --theme-heading-accent: var(--color-brand-600);
+  --theme-border: var(--color-dark-900-o20);
+
+  --theme-nav-background: var(--theme-background-2);
+
+  --theme-selection-background: var(--color-brand-300);
+  --theme-selection-text: var(--color-brand-text);
+
+  --theme-text-link-color: var(--theme-text);
+  --theme-text-link-border: var(--theme-border);
+  --theme-text-link-color-hover: var(--theme-text);
+  --theme-text-link-border-hover: var(--theme-text);
+
+  /* Button — primary */
+  --btn-primary-bg: var(--color-brand-500);
+  --btn-primary-text: var(--color-brand-text);
+  --btn-primary-border: var(--color-brand-500);
+  --btn-primary-bg-hover: var(--theme-text);
+  --btn-primary-text-hover: var(--theme-background);
+  --btn-primary-border-hover: var(--theme-text);
+
+  /* Button — secondary */
+  --btn-secondary-bg: var(--color-transparent);
+  --btn-secondary-text: var(--theme-text);
+  --btn-secondary-border: var(--theme-border);
+  --btn-secondary-bg-hover: var(--theme-text);
+  --btn-secondary-text-hover: var(--theme-background);
+  --btn-secondary-border-hover: var(--theme-text);
+}
+
+/* ==========================================================================
+   THEME — Dark
+   ========================================================================== */
+
+[data-theme="dark"],
+html[data-theme="dark"] {
+  --theme-background: var(--color-dark-900);
+  --theme-background-2: var(--color-dark-800);
+  --theme-text: var(--color-light-100);
+  --theme-heading-accent: var(--color-brand-500);
+  --theme-border: var(--color-light-100-o20);
+
+  --theme-nav-background: var(--theme-background-2);
+
+  --theme-text-link-border-hover: var(--color-brand-500);
+
+  /* Button primary uses same formula — just override if needed */
+  --btn-primary-bg-hover: var(--theme-text);
+  --btn-primary-text-hover: var(--theme-background);
+
+  --btn-secondary-bg-hover: var(--theme-text);
+  --btn-secondary-text-hover: var(--theme-background);
+}
+
+/* ==========================================================================
+   THEME — Light (explicit attribute, same as default)
+   ========================================================================== */
+
+[data-theme="light"] {
+  --theme-background: var(--color-light-200);
+  --theme-background-2: var(--color-light-100);
+  --theme-text: var(--color-dark-900);
+  --theme-heading-accent: var(--color-brand-600);
+  --theme-border: var(--color-dark-900-o20);
+
+  --theme-selection-background: var(--color-brand-300);
+  --theme-selection-text: var(--color-brand-text);
+
+  --theme-text-link-border-hover: var(--theme-text);
+}
+
+/* ==========================================================================
+   THEME — Brand
+   ========================================================================== */
+
+[data-theme="brand"] {
+  --theme-background: var(--color-brand-500);
+  --theme-background-2: var(--color-brand-600);
+  --theme-text: var(--color-brand-text);
+  --theme-heading-accent: var(--color-brand-text);
+  --theme-border: var(--color-brand-text-o20);
+}
+
+/* ==========================================================================
+   CSS RESET & BASE
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background-color: var(--theme-background);
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-huge);
+  letter-spacing: var(--letter-spacing-normal);
+  color: var(--theme-text);
+  background-color: var(--theme-background);
+  font-smoothing: antialiased;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  text-wrap: pretty;
+}
+
+img,
+video,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+video {
+  width: 100%;
+  object-fit: cover;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  outline-width: var(--focus-width);
+  outline-offset: var(--focus-offset-outer);
+}
+
+a:not([class]) {
+  text-decoration: underline;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+p,
+blockquote,
+label {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  margin: 0;
+}
+
+button {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  text-align: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+/* Selection */
+::selection {
+  background-color: var(--theme-selection-background);
+  color: var(--theme-selection-text);
+}
+
+img::selection {
+  background: transparent;
+}
+
+/* Focus */
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible,
+input:focus-visible {
+  outline-color: var(--theme-text);
+  outline-width: var(--focus-width);
+  outline-style: solid;
+  outline-offset: var(--focus-offset-outer);
+}
+
+/* ==========================================================================
+   TYPOGRAPHY — Headings
+   ========================================================================== */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-medium);
+  text-wrap: balance;
+  display: flow-root;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  line-height: var(--line-height-small);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  line-height: var(--line-height-small);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+h3 {
+  font-size: var(--font-size-h3);
+  line-height: var(--line-height-medium);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+h4 {
+  font-size: var(--font-size-h4);
+  line-height: var(--line-height-medium);
+  letter-spacing: var(--letter-spacing-normal);
+}
+
+h5 {
+  font-size: var(--font-size-h5);
+  line-height: var(--line-height-medium);
+  letter-spacing: var(--letter-spacing-normal);
+}
+
+h6 {
+  font-size: var(--font-size-h6);
+  line-height: var(--line-height-medium);
+  letter-spacing: var(--letter-spacing-normal);
+}
+
+p {
+  display: flow-root;
+}
+
+/* Font trim — cap-height / baseline correction for headings and paragraphs */
+:is(h1, h2, h3, h4, h5, h6, p)::before {
+  content: "";
+  display: table;
+  margin-bottom: calc(-0.5lh + var(--font-trim-top));
+}
+
+:is(h1, h2, h3, h4, h5, h6, p)::after {
+  content: "";
+  display: table;
+  margin-bottom: calc(-0.5lh + var(--font-trim-bottom));
+}
+
+/* ==========================================================================
+   UTILITIES — Type size helpers
+   ========================================================================== */
+
+.text-display {
+  font-size: var(--font-size-display);
+  line-height: var(--line-height-small);
+  letter-spacing: var(--letter-spacing-tight);
+}
+.text-large {
+  font-size: var(--font-size-large);
+  line-height: var(--line-height-large);
+}
+.text-small {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-large);
+}
+.text-body {
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-huge);
+}
+
+/* ==========================================================================
+   UTILITIES — Layout helpers
+   ========================================================================== */
+
+.container {
+  width: 100%;
+  max-width: var(--max-width-main);
+  margin-inline: auto;
+  padding-inline: var(--margin);
+}
+
+.container--small {
+  max-width: var(--max-width-small);
+  margin-inline: auto;
+  padding-inline: var(--margin);
+}
+
+/* ==========================================================================
+   UTILITIES — Section spacing
+   ========================================================================== */
+
+.section {
+  padding-block: var(--section-main);
+}
+.section--none {
+  padding-block: var(--section-none);
+}
+.section--small {
+  padding-block: var(--section-small);
+}
+.section--large {
+  padding-block: var(--section-large);
+}
+.section--page-top {
+  padding-top: var(--section-page-top);
+  padding-bottom: var(--section-main);
+}

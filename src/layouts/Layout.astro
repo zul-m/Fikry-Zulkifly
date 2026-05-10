@@ -1,0 +1,52 @@
+---
+import Nav from '@components/Nav.astro';
+import '@styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Fikry Zulkifly — Perunding Hartanah',
+  description = 'Pakar pemasaran hartanah berdaftar (REN71735) dengan pengalaman lebih 5 tahun. Hubungi kami untuk jualan dan sewaan hartanah.',
+} = Astro.props;
+
+const siteUrl = import.meta.env.PUBLIC_SITE_URL;
+const canonicalUrl = siteUrl
+  ? new URL(Astro.url.pathname, siteUrl).href
+  : Astro.url.href;
+---
+
+<!doctype html>
+<html lang="ms-MY" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonicalUrl} />
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:url"         content={canonicalUrl} />
+  <meta property="og:title"       content={title} />
+  <meta property="og:description" content={description} />
+
+  <!-- Twitter -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content={title} />
+  <meta name="twitter:description" content={description} />
+
+  <!-- Icons -->
+  <link rel="icon"             href="/images/favicon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="/images/webclip.jpg" />
+</head>
+<body>
+  <Nav />
+  <main id="main">
+    <slot />
+  </main>
+</body>
+</html>

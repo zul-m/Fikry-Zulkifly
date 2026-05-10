@@ -1,0 +1,8 @@
+name                  = "fikry-zulkifly"
+compatibility_date    = "2025-01-01"
+pages_build_output_dir = "./dist"
+
+# Optional: set KV, D1, R2 bindings here if you add SSR later
+# [[kv_namespaces]]
+# binding = "MY_KV"
+# id      = "xxxx"
