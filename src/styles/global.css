@@ -112,6 +112,10 @@
     transparent
   );
 
+  /* Accent — Lime */
+  --lime: #a3e635;
+  --lime-alpha-55: color-mix(in srgb, var(--lime) 55%, transparent);
+
   /* Brand — base */
   --color-brand: #00509d;
 
