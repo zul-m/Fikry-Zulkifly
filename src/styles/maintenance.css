@@ -76,6 +76,7 @@
   color: var(--theme-text);
   margin: 0 0 var(--space-5);
   text-wrap: balance;
+  overflow-wrap: break-word;
 }
 .display-accent {
   display: inline-block;
@@ -132,7 +133,11 @@
     min-height: 100dvh;
     overflow: visible;
   }
+  .display {
+    font-size: var(--font-size-h1);
+  }
   .meta {
     grid-template-columns: 1fr;
+    gap: var(--space-5);
   }
 }
