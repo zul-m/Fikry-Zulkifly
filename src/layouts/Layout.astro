@@ -5,11 +5,13 @@ import '@styles/global.css';
 interface Props {
   title?: string;
   description?: string;
+  navPosition?: 'sticky' | 'overlap';
 }
 
 const {
   title = 'Fikry Zulkifly — Perunding Hartanah',
   description = 'Pakar pemasaran hartanah berdaftar (REN71735) dengan pengalaman lebih 5 tahun. Hubungi kami untuk jualan dan sewaan hartanah.',
+  navPosition = 'sticky',
 } = Astro.props;
 
 const siteUrl = import.meta.env.PUBLIC_SITE_URL;
@@ -44,7 +46,7 @@ const canonicalUrl = siteUrl
   <link rel="apple-touch-icon" href="/images/webclip.jpg" />
 </head>
 <body>
-  <Nav />
+  <Nav position={navPosition} />
   <main id="main">
     <slot />
   </main>
