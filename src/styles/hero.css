@@ -4,15 +4,32 @@
   min-height: 100dvh;
   border-radius: 0 0 var(--radius-main) var(--radius-main);
   overflow: hidden;
+  background: var(--color-dark-900);
+  isolation: isolate;
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
   background:
     linear-gradient(
       180deg,
       color-mix(in srgb, var(--color-brand-800) 55%, transparent) 0%,
       color-mix(in srgb, var(--color-dark-900) 78%, transparent) 100%
     ),
-    url("/images/modern-house.png") center / cover no-repeat,
-    var(--color-dark-900);
-  isolation: isolate;
+    url("/images/modern-house.png") center / cover no-repeat;
+  will-change: transform;
+  animation: hero-bg-zoom 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+@keyframes hero-bg-zoom {
+  from { transform: scale(1.08); }
+  to   { transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero::before {
+    animation: none;
+  }
 }
 .hero-inner {
   position: relative;
