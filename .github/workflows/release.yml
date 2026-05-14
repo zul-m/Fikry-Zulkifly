@@ -27,19 +27,13 @@ jobs:
             COMMITS=$(git log --oneline "$TAG" | head -20 | sed 's/^/- /')
           fi
 
-          MESSAGE="*New Release:* $TAG
+          MESSAGE=$(printf 'New Release: %s\n\nRepository: %s\n\nRelease Notes:\n%s\n\nCommits:\n%s\n\nURL: %s' \
+            "${TAG}" "${REPO}" "${RELEASE_BODY}" "${COMMITS}" "${URL}")
 
-          Repository: $REPO
-
-          Release Notes:
-          $RELEASE_BODY
-
-          Commits:
-          $COMMITS
-
-          URL: $URL"
-
+          jq -n \
+            --arg chat_id "${CHAT_ID}" \
+            --arg text "${MESSAGE}" \
+            '{"chat_id": $chat_id, "text": $text}' | \
           curl -s --fail -X POST "https://api.telegram.org/bot${BOT_TOKEN}/sendMessage" \
-            --data-urlencode "chat_id=${CHAT_ID}" \
-            --data-urlencode "text=${MESSAGE}" \
-            --data-urlencode "parse_mode=Markdown"
+            -H "Content-Type: application/json" \
+            -d @-
