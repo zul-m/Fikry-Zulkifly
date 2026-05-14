@@ -23,9 +23,9 @@ jobs:
           fetch-depth: 0
       - name: Send Telegram message
         env:
-          RELEASE_BODY: ${{ github.event_name == 'workflow_dispatch' && inputs.release_body || github.event.release.body }}
+          RELEASE_BODY: ${{ inputs.release_body || github.event.release.body }}
           REPO: ${{ github.repository }}
-          TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.event.release.tag_name }}
+          TAG: ${{ inputs.tag || github.event.release.tag_name }}
           URL: ${{ github.event.release.html_url || 'https://github.com' }}
           BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
@@ -37,17 +37,8 @@ jobs:
             COMMITS=$(git log --oneline "$TAG" | head -20 | sed 's/^/- /')
           fi
 
-          MESSAGE="New Release: ${TAG}
-
-Repository: ${REPO}
-
-Release Notes:
-${RELEASE_BODY}
-
-Commits:
-${COMMITS}
-
-URL: ${URL}"
+          MESSAGE=$(printf 'New Release: %s\n\nRepository: %s\n\nRelease Notes:\n%s\n\nCommits:\n%s\n\nURL: %s' \
+            "${TAG}" "${REPO}" "${RELEASE_BODY}" "${COMMITS}" "${URL}")
 
           jq -n \
             --arg chat_id "${CHAT_ID}" \
