@@ -2,6 +2,13 @@ name: Deploy Studio
 on:
   push:
     branches: [main]
+    paths:
+      - 'sanity.config.ts'
+      - 'sanity.cli.ts'
+      - 'src/sanity/**'
+      - 'wrangler.studio.toml'
+      - 'package.json'
+      - '.github/workflows/deploy-studio.yml'
 jobs:
   deploy:
     runs-on: ubuntu-latest
