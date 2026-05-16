@@ -1,5 +1,10 @@
 name               = "fikryzulkifly-studio"
 compatibility_date = "2025-01-01"
 
+[[routes]]
+pattern       = "studio.fikryzulkifly.com"
+custom_domain = true
+
 [assets]
-directory = "./.studio-dist"
+directory          = "./.studio-dist"
+not_found_handling = "single-page-application"
