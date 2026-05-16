@@ -948,7 +948,7 @@ const { position = 'sticky' } = Astro.props;
 
   // Toggle dropdowns (both desktop keyboard + mobile tap)
   document.querySelectorAll('.nav_links_link[aria-haspopup="true"]').forEach((btn) => {
-    btn.addEventListener('click', (e) => {
+    btn.addEventListener('click', () => {
       // On desktop with hover, only toggle via keyboard / click (not hover)
       const isOpen = btn.getAttribute('aria-expanded') === 'true';
 
