@@ -5,10 +5,11 @@ export default {
     const studioPath = env.STUDIO_PATH || '/login';
 
     if (studioHostname && url.hostname === studioHostname) {
-      if (url.pathname === '/' || url.pathname === '') {
-        return Response.redirect(`https://${studioHostname}${studioPath}`, 302);
-      }
-      return env.ASSETS.fetch(request);
+      // Serve Studio at root — rewrite internally to the built HTML file
+      const pathname = url.pathname === '/' || url.pathname === '' ? studioPath : url.pathname;
+      const rewritten = new URL(url);
+      rewritten.pathname = pathname;
+      return env.ASSETS.fetch(new Request(rewritten.toString(), request));
     }
 
     if (!url.pathname.startsWith('/maintenance')) {
