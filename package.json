@@ -15,7 +15,8 @@
     "astro": "^6.3.1",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "sanity": "^5.14.1"
+    "sanity": "^5.14.1",
+    "styled-components": "^6.4.1"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.2",
