@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "build:studio": "sanity build .studio-dist",
+    "deploy:studio": "npm run build:studio && wrangler deploy --config wrangler.studio.toml",
     "preview": "astro preview",
     "check": "astro check"
   },
