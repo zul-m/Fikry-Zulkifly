@@ -1,0 +1,76 @@
+---
+import { ChevronRight } from '@lucide/astro';
+
+interface Crumb {
+  href?: string;
+  label: string;
+}
+
+interface Props {
+  items: Crumb[];
+}
+
+const { items } = Astro.props;
+---
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <ol role="list">
+    {items.map((item, i) => {
+      const isLast = i === items.length - 1;
+      return (
+        <li>
+          {item.href && !isLast ? (
+            <a href={item.href} class="breadcrumbs__link">{item.label}</a>
+          ) : (
+            <span class="breadcrumbs__current" aria-current="page">{item.label}</span>
+          )}
+          {!isLast && (
+            <span class="breadcrumbs__sep" aria-hidden="true">
+              <ChevronRight size={16} />
+            </span>
+          )}
+        </li>
+      );
+    })}
+  </ol>
+</nav>
+
+<style>
+  .breadcrumbs ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1);
+  }
+  .breadcrumbs li {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+  .breadcrumbs__link,
+  .breadcrumbs__current {
+    font-family: var(--font-family);
+    font-size: var(--font-size-body);
+    line-height: var(--line-height-huge);
+    color: var(--theme-text);
+  }
+  .breadcrumbs__link {
+    font-weight: var(--font-weight-regular);
+    text-decoration: none;
+    border-bottom: var(--border-width-main) solid transparent;
+    transition: border-color .2s ease;
+  }
+  .breadcrumbs__link:hover { border-bottom-color: var(--theme-text); }
+  .breadcrumbs__current {
+    font-weight: var(--font-weight-bold);
+  }
+  .breadcrumbs__sep {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--theme-text);
+  }
+</style>
