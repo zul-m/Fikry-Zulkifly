@@ -1,0 +1,137 @@
+---
+import { Search, ChevronDown, ListFilter } from '@lucide/astro';
+---
+
+<form class="filter-bar" role="search" onsubmit="return false;">
+  <label class="filter-bar__search">
+    <span class="filter-bar__icon" aria-hidden="true">
+      <Search size={24} />
+    </span>
+    <input type="search" name="q" placeholder="Cari lokasi" autocomplete="off" />
+  </label>
+  <div class="filter-bar__buttons">
+    <button class="filter-bar__select" type="button" aria-haspopup="listbox">
+      <span>Pilih lokasi</span>
+      <span class="filter-bar__icon" aria-hidden="true">
+        <ChevronDown size={24} />
+      </span>
+    </button>
+    <button class="filter-bar__select" type="button" aria-haspopup="listbox">
+      <span>Pilih jenis</span>
+      <span class="filter-bar__icon" aria-hidden="true">
+        <ChevronDown size={24} />
+      </span>
+    </button>
+    <button class="filter-bar__select" type="button" aria-haspopup="listbox">
+      <span>Pilih harga</span>
+      <span class="filter-bar__icon" aria-hidden="true">
+        <ChevronDown size={24} />
+      </span>
+    </button>
+    <button class="filter-bar__sort" type="button" aria-haspopup="listbox" aria-label="Susun mengikut">
+      <span class="filter-bar__icon" aria-hidden="true">
+        <ListFilter size={24} />
+      </span>
+    </button>
+  </div>
+</form>
+
+<style>
+  .filter-bar {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  @media (min-width: 48rem) {
+    .filter-bar {
+      grid-template-columns: repeat(3, 1fr);
+      align-items: start;
+      gap: var(--space-4);
+    }
+
+    .filter-bar__search {
+      grid-column: 1;
+    }
+
+    .filter-bar__buttons {
+      grid-column: 2 / 4;
+    }
+  }
+
+  .filter-bar__search,
+  .filter-bar__select {
+    height: 3rem;
+    border-radius: var(--radius-small);
+    background: var(--color-light-200);
+    border: var(--border-width-main) solid var(--theme-border);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 0 var(--space-2);
+  }
+
+  .filter-bar__search {
+    cursor: text;
+  }
+
+  .filter-bar__search input {
+    flex: 1 1 auto;
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font-family: var(--font-family);
+    font-size: var(--font-size-body);
+    line-height: var(--line-height-huge);
+    color: var(--theme-text);
+  }
+  .filter-bar__search input::placeholder {
+    color: color-mix(in srgb, var(--theme-text) 40%, transparent);
+  }
+
+  .filter-bar__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    align-items: center;
+  }
+
+  .filter-bar__select {
+    flex: 1 1 auto;
+    justify-content: space-between;
+    color: var(--theme-text);
+    font-family: var(--font-family);
+    font-size: var(--font-size-body);
+    line-height: var(--line-height-huge);
+    cursor: pointer;
+    transition: border-color .2s ease;
+  }
+  .filter-bar__select:hover { border-color: var(--theme-text); }
+
+  .filter-bar__sort {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    height: 1.5rem;
+    margin-left: auto;
+    cursor: pointer;
+    font-family: var(--font-family);
+    font-size: var(--font-size-body);
+    line-height: var(--line-height-huge);
+    color: var(--theme-text);
+  }
+
+  .filter-bar__icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--theme-text);
+    flex-shrink: 0;
+  }
+</style>
