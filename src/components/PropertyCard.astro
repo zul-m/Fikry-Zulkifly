@@ -33,7 +33,6 @@ const img  = property.image ?? "/images/modern-house.png";
         <span class="card__tag">{property.status}</span>
         <span class="card__price">{property.price}</span>
       </div>
-
       <div class="card__meta">
         <h3 class="card__heading">{property.title}</h3>
         <span class="card__location">{property.location}</span>
@@ -59,10 +58,10 @@ const img  = property.image ?? "/images/modern-house.png";
     overflow: hidden;
     text-decoration: none;
     color: var(--theme-text);
-    transition: transform .2s ease, border-color .2s ease;
+    transition: box-shadow .2s ease;
   }
   .card:hover {
-    border-color: var(--theme-text);
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.12);
   }
   .card:focus-visible {
     outline: 2px solid var(--theme-text);
@@ -103,18 +102,17 @@ const img  = property.image ?? "/images/modern-house.png";
     height: 2.1875rem;
     padding: 0 var(--space-2);
     border-radius: var(--radius-small);
-    background: var(--color-light-200);
+    background: var(--color-brand-300);
     font-family: var(--font-family);
-    font-size: var(--font-size-body);
-    font-weight: var(--font-weight-bold);
-    line-height: var(--line-height-huge);
-    color: var(--theme-text);
+    font-size: var(--font-size-small);
+    line-height: var(--line-height-large);
+    color: var(--theme-background-2);
   }
 
   .card__price {
     font-family: var(--font-family);
     font-size: var(--font-size-body);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
     line-height: var(--line-height-huge);
     color: var(--theme-text);
   }
@@ -122,15 +120,14 @@ const img  = property.image ?? "/images/modern-house.png";
   .card__meta {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
+    gap: var(--space-1);
   }
 
   .card__heading {
     margin: 0;
     font-family: var(--font-family);
-    font-size: var(--font-size-h5);
-    font-weight: var(--font-weight-medium);
-    line-height: var(--line-height-large);
+    font-size: var(--font-size-h4);
+    line-height: var(--line-height-medium);
     letter-spacing: var(--letter-spacing-tight);
     color: var(--theme-text);
     text-wrap: balance;
@@ -138,9 +135,9 @@ const img  = property.image ?? "/images/modern-house.png";
 
   .card__location {
     font-family: var(--font-family);
-    font-size: var(--font-size-body);
+    font-size: var(--font-size-small);
     font-weight: var(--font-weight-regular);
-    line-height: var(--line-height-huge);
+    line-height: var(--line-height-large);
     color: var(--theme-text);
   }
 
@@ -150,15 +147,15 @@ const img  = property.image ?? "/images/modern-house.png";
     gap: var(--space-1);
     margin-top: auto;
     font-family: var(--font-family);
-    font-size: var(--font-size-large);
+    font-size: var(--font-size-body);
     font-weight: var(--font-weight-regular);
     line-height: var(--line-height-huge);
     color: var(--theme-text);
   }
 
   .card__cta-icon {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 1em;
+    height: 1em;
     display: inline-flex;
     align-items: center;
     justify-content: center;
