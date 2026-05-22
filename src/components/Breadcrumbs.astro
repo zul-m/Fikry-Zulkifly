@@ -60,12 +60,23 @@ const { items } = Astro.props;
   .breadcrumbs__link {
     font-weight: var(--font-weight-regular);
     text-decoration: none;
-    border-bottom: var(--border-width-main) solid transparent;
-    transition: border-color .2s ease;
+    position: relative;
   }
-  .breadcrumbs__link:hover { border-bottom-color: var(--theme-text); }
+  .breadcrumbs__link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: var(--border-width-main);
+    background-color: var(--theme-text);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .2s ease;
+  }
+  .breadcrumbs__link:hover::after { transform: scaleX(1); }
   .breadcrumbs__current {
-    font-weight: var(--font-weight-bold);
+    color: var(--color-dark-800);
   }
   .breadcrumbs__sep {
     display: inline-flex;
