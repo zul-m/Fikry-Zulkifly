@@ -1,0 +1,55 @@
+---
+import Layout from '@layouts/Layout.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import FilterBar from '@components/FilterBar.astro';
+import PropertyCard from '@components/PropertyCard.astro';
+import '@styles/beli.css';
+
+// Swap this static array for a Sanity query once the `property` schema is wired:
+// import { sanityClient } from "sanity:client";
+// const properties = await sanityClient.fetch(`*[_type == "property"] | order(featured desc, _createdAt desc){
+//   _id, slug, title, location, price, status, "image": image.asset->url
+// }`);
+
+const properties = [
+  { slug: "uno",              title: "UNO",              location: "Cyberjaya, Selangor",    price: "RM 478,000", status: "Projek baru" },
+  { slug: "sanderling",       title: "Sanderling",       location: "Cyberjaya, Selangor",    price: "RM 263,000", status: "Lelong"      },
+  { slug: "lakefront-homes",  title: "Lakefront Homes",  location: "Cyberjaya, Selangor",    price: "RM 410,000", status: "Subsale"     },
+  { slug: "rumah-selangorku", title: "Rumah Selangorku", location: "Salak Tinggi, Selangor", price: "RM 250,000", status: "Projek baru" },
+  { slug: "serin-residency",  title: "Serin Residency",  location: "Cyberjaya, Selangor",    price: "RM 447,000", status: "Lelong"      },
+  { slug: "aspire-residence", title: "Aspire Residence", location: "Cyberjaya, Selangor",    price: "RM 210,000", status: "Lelong"      },
+];
+
+const crumbs = [
+  { href: "/",  label: "Laman utama" },
+  {             label: "Beli"        },
+];
+---
+
+<Layout
+  title="Beli — FZ Property"
+  description="Semak senarai hartanah terkini untuk dibeli — projek baru, subsale dan lelong di Selangor."
+>
+  <section
+    class="buy"
+    data-theme="light"
+    data-screen-label="01 Beli — Subsale"
+    aria-labelledby="buy-heading"
+  >
+    <div class="buy-inner">
+      <h1 id="buy-heading" class="sr-only">Beli — Senarai hartanah</h1>
+
+      <Breadcrumbs items={crumbs} />
+
+      <div class="buy__content">
+        <FilterBar />
+
+        <ul class="buy__grid" role="list">
+          {properties.map((p) => (
+            <li data-location={p.location}><PropertyCard property={p} /></li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+</Layout>

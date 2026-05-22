@@ -1,0 +1,166 @@
+---
+import { ChevronRight } from '@lucide/astro';
+
+interface Property {
+  slug:     string;
+  title:    string;
+  location: string;
+  price:    string;
+  status:   string;
+  image?:   string;
+}
+
+interface Props {
+  property: Property;
+}
+
+const { property } = Astro.props;
+const href = `/beli/${property.slug}`;
+const img  = property.image ?? "/images/modern-house.png";
+---
+
+<a class="card" href={href}>
+  <div
+    class="card__photo"
+    role="img"
+    aria-label={property.title}
+    style={`background-image: url('${img}')`}
+  />
+
+  <div class="card__body">
+    <div class="card__body-inner">
+      <div class="card__info">
+        <span class="card__tag">{property.status}</span>
+        <span class="card__price">{property.price}</span>
+      </div>
+      <div class="card__meta">
+        <h3 class="card__heading">{property.title}</h3>
+        <span class="card__location">{property.location}</span>
+      </div>
+    </div>
+
+    <span class="card__cta">
+      Lihat Projek
+      <span class="card__cta-icon" aria-hidden="true">
+        <ChevronRight size={24} />
+      </span>
+    </span>
+  </div>
+</a>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--radius-main);
+    border: var(--border-width-main) solid var(--theme-border);
+    background: var(--theme-background-2);
+    overflow: hidden;
+    text-decoration: none;
+    color: var(--theme-text);
+    transition: box-shadow .2s ease;
+  }
+  .card:hover {
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.12);
+  }
+  .card:focus-visible {
+    outline: 2px solid var(--theme-text);
+    outline-offset: 3px;
+  }
+
+  .card__photo {
+    aspect-ratio: 426 / 300;
+    background-color: var(--color-light-200);
+    background-size: cover;
+    background-position: center;
+  }
+
+  .card__body {
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    background: var(--theme-background-2);
+    flex: 1 1 auto;
+  }
+
+  .card__body-inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .card__info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .card__tag {
+    display: inline-flex;
+    align-items: center;
+    height: 2.1875rem;
+    padding: 0 var(--space-2);
+    border-radius: var(--radius-small);
+    background: var(--color-brand-300);
+    font-family: var(--font-family);
+    font-size: var(--font-size-small);
+    line-height: var(--line-height-large);
+    color: var(--theme-background-2);
+  }
+
+  .card__price {
+    font-family: var(--font-family);
+    font-size: var(--font-size-body);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-huge);
+    color: var(--theme-text);
+  }
+
+  .card__meta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .card__heading {
+    margin: 0;
+    font-family: var(--font-family);
+    font-size: var(--font-size-h4);
+    line-height: var(--line-height-medium);
+    letter-spacing: var(--letter-spacing-tight);
+    color: var(--theme-text);
+    text-wrap: balance;
+  }
+
+  .card__location {
+    font-family: var(--font-family);
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-height-large);
+    color: var(--theme-text);
+  }
+
+  .card__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin-top: auto;
+    font-family: var(--font-family);
+    font-size: var(--font-size-body);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-height-huge);
+    color: var(--theme-text);
+  }
+
+  .card__cta-icon {
+    width: 1em;
+    height: 1em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform .2s ease;
+  }
+
+  .card:hover .card__cta-icon { transform: translateX(0.125rem); }
+</style>

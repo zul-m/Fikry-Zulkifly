@@ -1,4 +1,6 @@
 ---
+import { ChevronRight } from '@lucide/astro';
+
 interface Props {
   position?: 'overlap' | 'sticky';
 }
@@ -34,9 +36,7 @@ const { position = 'sticky' } = Astro.props;
                 <button class="nav_links_link" aria-expanded="false" aria-haspopup="true">
                   <span class="nav_links_text">Beli</span>
                   <span class="nav_links_svg" aria-hidden="true">
-                    <svg viewBox="0 0 12 21" fill="none" width="100%" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M1.5 19.5L10.5 10.5L1.5 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
+                    <ChevronRight size={16} />
                   </span>
                 </button>
                 <div class="nav_dropdown_main_wrap" role="region">
@@ -80,9 +80,7 @@ const { position = 'sticky' } = Astro.props;
                 <button class="nav_links_link" aria-expanded="false" aria-haspopup="true">
                   <span class="nav_links_text">Sewa</span>
                   <span class="nav_links_svg" aria-hidden="true">
-                    <svg viewBox="0 0 12 21" fill="none" width="100%" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M1.5 19.5L10.5 10.5L1.5 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
+                    <ChevronRight size={16} />
                   </span>
                 </button>
                 <div class="nav_dropdown_main_wrap" role="region">
@@ -114,9 +112,7 @@ const { position = 'sticky' } = Astro.props;
                 <button class="nav_links_link" aria-expanded="false" aria-haspopup="true">
                   <span class="nav_links_text">Sumber</span>
                   <span class="nav_links_svg" aria-hidden="true">
-                    <svg viewBox="0 0 12 21" fill="none" width="100%" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M1.5 19.5L10.5 10.5L1.5 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
+                    <ChevronRight size={16} />
                   </span>
                 </button>
                 <div class="nav_dropdown_main_wrap" role="region">
@@ -171,7 +167,7 @@ const { position = 'sticky' } = Astro.props;
               </a>
             </li>
             <li class="nav_buttons_item is-desktop">
-              <a href="#hubungi" class="btn btn-primary">Hubungi Saya</a>
+              <a href="#contact" class="btn btn-primary">Hubungi Saya</a>
             </li>
           </ul>
 
@@ -203,9 +199,7 @@ const { position = 'sticky' } = Astro.props;
                   <button class="nav_links_link" aria-expanded="false" aria-haspopup="true">
                     <span class="nav_links_text">Beli</span>
                     <span class="nav_links_svg" aria-hidden="true">
-                      <svg viewBox="0 0 12 21" fill="none" width="100%" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1.5 19.5L10.5 10.5L1.5 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
+                      <ChevronRight size={16} />
                     </span>
                   </button>
                   <div class="nav_dropdown_main_wrap">
@@ -249,9 +243,7 @@ const { position = 'sticky' } = Astro.props;
                   <button class="nav_links_link" aria-expanded="false" aria-haspopup="true">
                     <span class="nav_links_text">Sewa</span>
                     <span class="nav_links_svg" aria-hidden="true">
-                      <svg viewBox="0 0 12 21" fill="none" width="100%" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1.5 19.5L10.5 10.5L1.5 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
+                      <ChevronRight size={16} />
                     </span>
                   </button>
                   <div class="nav_dropdown_main_wrap">
@@ -283,9 +275,7 @@ const { position = 'sticky' } = Astro.props;
                   <button class="nav_links_link" aria-expanded="false" aria-haspopup="true">
                     <span class="nav_links_text">Sumber</span>
                     <span class="nav_links_svg" aria-hidden="true">
-                      <svg viewBox="0 0 12 21" fill="none" width="100%" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1.5 19.5L10.5 10.5L1.5 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
+                      <ChevronRight size={16} />
                     </span>
                   </button>
                   <div class="nav_dropdown_main_wrap">
@@ -340,7 +330,7 @@ const { position = 'sticky' } = Astro.props;
                 </a>
               </li>
               <li class="nav_buttons_item">
-                <a href="#hubungi" class="btn btn-primary">Hubungi Saya</a>
+                <a href="#contact" class="btn btn-primary">Hubungi Saya</a>
               </li>
             </ul>
 
@@ -551,7 +541,7 @@ const { position = 'sticky' } = Astro.props;
   }
 
   .nav_links_svg {
-    width: 0.5rem;
+    width: 1rem;
     flex: none;
     margin-left: auto;
     transition: transform 0.2s ease;
@@ -939,20 +929,16 @@ const { position = 'sticky' } = Astro.props;
   const hamburger = document.getElementById('nav-hamburger');
   const mobileMenu = document.getElementById('mobile-menu');
 
-  // Toggle mobile menu
   hamburger?.addEventListener('click', () => {
     const isOpen = hamburger.getAttribute('aria-expanded') === 'true';
     hamburger.setAttribute('aria-expanded', String(!isOpen));
     mobileMenu?.setAttribute('aria-hidden', String(isOpen));
   });
 
-  // Toggle dropdowns (both desktop keyboard + mobile tap)
   document.querySelectorAll('.nav_links_link[aria-haspopup="true"]').forEach((btn) => {
     btn.addEventListener('click', () => {
-      // On desktop with hover, only toggle via keyboard / click (not hover)
       const isOpen = btn.getAttribute('aria-expanded') === 'true';
 
-      // Close all other open dropdowns in the same nav_links_wrap
       const wrap = btn.closest('.nav_links_wrap');
       wrap?.querySelectorAll('.nav_links_link[aria-expanded="true"]').forEach((other) => {
         if (other !== btn) other.setAttribute('aria-expanded', 'false');
@@ -962,7 +948,6 @@ const { position = 'sticky' } = Astro.props;
     });
   });
 
-  // Close dropdowns when clicking outside
   document.addEventListener('click', (e) => {
     if (!(e.target as Element).closest('.nav_dropdown_component')) {
       document.querySelectorAll('.nav_links_link[aria-expanded="true"]').forEach((btn) => {
@@ -971,7 +956,6 @@ const { position = 'sticky' } = Astro.props;
     }
   });
 
-  // Close mobile menu when a link is clicked
   mobileMenu?.querySelectorAll('a').forEach((link) => {
     link.addEventListener('click', () => {
       hamburger?.setAttribute('aria-expanded', 'false');
