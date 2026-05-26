@@ -10,11 +10,18 @@ const locationLabels: Record<string, string> = {
   "presint-7-putrajaya": "Presint 7, Putrajaya",
 };
 
+const typeLabels: Record<string, string> = {
+  "condo": "Kondominium",
+  "apartment": "Pangsapuri",
+  "double-storey-terrace": "Teres 2 Tingkat",
+};
+
 const rawProjects = await sanityClient.fetch<{
   _id: string;
   slug: string;
   title: string;
   location: string;
+  propertyType: string;
   priceFrom: number;
   imageUrl: string | null;
 }[]>(`
@@ -23,15 +30,38 @@ const rawProjects = await sanityClient.fetch<{
     "slug": slug.current,
     title,
     location,
+    propertyType,
     priceFrom,
     "imageUrl": image.asset->url
   }
 `);
 
+const locationOptions = [...new Set(rawProjects.map(p => p.location))].map(v => ({
+  value: v,
+  label: locationLabels[v] ?? v,
+}));
+
+const typeOptions = [...new Set(rawProjects.map(p => p.propertyType).filter(Boolean))].map(v => ({
+  value: v,
+  label: typeLabels[v] ?? v,
+}));
+
+function priceBucket(price: number): string {
+  if (price < 300_000) return '200-299';
+  if (price < 400_000) return '300-399';
+  if (price < 500_000) return '400-499';
+  if (price < 600_000) return '500-599';
+  if (price < 700_000) return '600-699';
+  return '700+';
+}
+
 const properties = rawProjects.map((p) => ({
   slug: p.slug,
   title: p.title,
   location: locationLabels[p.location] ?? p.location,
+  locationKey: p.location,
+  typeKey: p.propertyType,
+  priceKey: priceBucket(p.priceFrom),
   price: `RM ${p.priceFrom.toLocaleString("en-MY")}`,
   status: "Projek baru",
   image: p.imageUrl ?? undefined,
@@ -59,11 +89,11 @@ const crumbs = [
       <Breadcrumbs items={crumbs} />
 
       <div class="buy__content">
-        <FilterBar />
+        <FilterBar locationOptions={locationOptions} typeOptions={typeOptions} />
 
         <ul class="buy__grid" role="list">
           {properties.map((p) => (
-            <li data-location={p.location}><PropertyCard property={p} /></li>
+            <li data-location={p.locationKey} data-type={p.typeKey} data-price={p.priceKey}><PropertyCard property={p} /></li>
           ))}
         </ul>
       </div>
