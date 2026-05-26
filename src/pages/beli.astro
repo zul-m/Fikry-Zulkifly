@@ -3,22 +3,39 @@ import Layout from '@layouts/Layout.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
 import FilterBar from '@components/FilterBar.astro';
 import PropertyCard from '@components/PropertyCard.astro';
+import { sanityClient } from 'sanity:client';
 import '@styles/beli.css';
 
-// Swap this static array for a Sanity query once the `property` schema is wired:
-// import { sanityClient } from "sanity:client";
-// const properties = await sanityClient.fetch(`*[_type == "property"] | order(featured desc, _createdAt desc){
-//   _id, slug, title, location, price, status, "image": image.asset->url
-// }`);
+const locationLabels: Record<string, string> = {
+  "presint-7-putrajaya": "Presint 7, Putrajaya",
+};
 
-const properties = [
-  { slug: "uno",              title: "UNO",              location: "Cyberjaya, Selangor",    price: "RM 478,000", status: "Projek baru" },
-  { slug: "sanderling",       title: "Sanderling",       location: "Cyberjaya, Selangor",    price: "RM 263,000", status: "Lelong"      },
-  { slug: "lakefront-homes",  title: "Lakefront Homes",  location: "Cyberjaya, Selangor",    price: "RM 410,000", status: "Subsale"     },
-  { slug: "rumah-selangorku", title: "Rumah Selangorku", location: "Salak Tinggi, Selangor", price: "RM 250,000", status: "Projek baru" },
-  { slug: "serin-residency",  title: "Serin Residency",  location: "Cyberjaya, Selangor",    price: "RM 447,000", status: "Lelong"      },
-  { slug: "aspire-residence", title: "Aspire Residence", location: "Cyberjaya, Selangor",    price: "RM 210,000", status: "Lelong"      },
-];
+const rawProjects = await sanityClient.fetch<{
+  _id: string;
+  slug: string;
+  title: string;
+  location: string;
+  priceFrom: number;
+  imageUrl: string | null;
+}[]>(`
+  *[_type == "newProject"] | order(publishedAt desc) {
+    _id,
+    "slug": slug.current,
+    title,
+    location,
+    priceFrom,
+    "imageUrl": image.asset->url
+  }
+`);
+
+const properties = rawProjects.map((p) => ({
+  slug: p.slug,
+  title: p.title,
+  location: locationLabels[p.location] ?? p.location,
+  price: `RM ${p.priceFrom.toLocaleString("en-MY")}`,
+  status: "Projek baru",
+  image: p.imageUrl ?? undefined,
+}));
 
 const crumbs = [
   { href: "/",  label: "Laman utama" },

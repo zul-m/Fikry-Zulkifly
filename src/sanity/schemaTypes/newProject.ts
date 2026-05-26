@@ -1,0 +1,120 @@
+import { defineField, defineType } from "sanity";
+import { AutoSlugInput } from "../components/AutoSlugInput";
+import { RegistrationStatusInput } from "../components/RegistrationStatusInput";
+
+export const newProject = defineType({
+  name: "newProject",
+  title: "Projek Baru",
+  type: "document",
+  fields: [
+    defineField({
+      name: "title",
+      title: "Nama Projek",
+      type: "string",
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "slug",
+      title: "Slug",
+      type: "slug",
+      components: { input: AutoSlugInput },
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "developer",
+      title: "Pemaju",
+      type: "string",
+    }),
+    defineField({
+      name: "location",
+      title: "Lokasi",
+      type: "string",
+      options: {
+        list: [{ title: "Presint 7, Putrajaya", value: "presint-7-putrajaya" }],
+      },
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "priceFrom",
+      title: "Harga Dari (RM)",
+      type: "number",
+      validation: (Rule) => Rule.required().positive(),
+    }),
+    defineField({
+      name: "propertyType",
+      title: "Jenis Hartanah",
+      type: "string",
+      options: {
+        list: [
+          { title: "Kondominium", value: "condo" },
+          { title: "Pangsapuri", value: "apartment" },
+          { title: "Teres 2 Tingkat", value: "double-storey-terrace" },
+        ],
+        layout: "radio",
+      },
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "tenure",
+      title: "Pegangan",
+      type: "string",
+      options: {
+        list: [
+          { title: "Pajakan", value: "leasehold" },
+          { title: "Pegangan Bebas", value: "freehold" },
+          { title: "Tanah Rezab Melayu", value: "malay-reserve" },
+        ],
+        layout: "radio",
+      },
+    }),
+    defineField({
+      name: "completionYear",
+      title: "Tahun Siap Jangkaan",
+      type: "number",
+    }),
+    defineField({
+      name: "description",
+      title: "Keterangan",
+      type: "array",
+      of: [{ type: "block" }],
+    }),
+    defineField({
+      name: "image",
+      title: "Imej Utama",
+      type: "image",
+      options: { hotspot: true },
+    }),
+    defineField({
+      name: "gallery",
+      title: "Galeri",
+      type: "array",
+      of: [{ type: "image", options: { hotspot: true } }],
+    }),
+    defineField({
+      name: "registrationOpen",
+      title: "Status Pendaftaran",
+      type: "boolean",
+      components: { input: RegistrationStatusInput },
+      initialValue: true,
+    }),
+    defineField({
+      name: "publishedAt",
+      title: "Tarikh Diterbitkan",
+      type: "date",
+      initialValue: () => new Date().toISOString().split("T")[0],
+    }),
+  ],
+  preview: {
+    select: {
+      title: "title",
+      subtitle: "location",
+      media: "image",
+    },
+    prepare({ title, subtitle, media }) {
+      const locations: Record<string, string> = {
+        "presint-7-putrajaya": "Presint 7, Putrajaya",
+      };
+      return { title, subtitle: locations[subtitle] ?? subtitle, media };
+    },
+  },
+});
