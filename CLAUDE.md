@@ -1,4 +1,4 @@
-# Fikry Zulkifly — Project Preferences
+# Fikry Zulkifly - Project Preferences
 
 ## CSS
 
@@ -18,6 +18,11 @@
 ## Naming
 
 - **English only for all code identifiers** — class names, IDs, data attributes, CSS custom properties, JS variables, and file names must be in English, even though the site content and copy are in Malay. Never use Malay (or any other language) words as identifiers.
+
+## Sanity Studio
+
+- **Malay for all display labels** — Sanity schema `title` fields and option `title` values shown in the Studio UI must be in Malay (e.g. `"Tajuk"`, `"Jenis Hartanah"`).
+- Code identifiers (`name`, `value`, `type`) remain in English as usual.
 
 ## Design System
 
