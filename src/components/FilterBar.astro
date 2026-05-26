@@ -1,5 +1,15 @@
 ---
 import { Search, ChevronDown, ArrowUpDown, SlidersHorizontal } from '@lucide/astro';
+
+interface FilterOption {
+  value: string;
+  label: string;
+}
+interface Props {
+  locationOptions: FilterOption[];
+  typeOptions: FilterOption[];
+}
+const { locationOptions, typeOptions } = Astro.props;
 ---
 
 <form class="filter-bar" role="search" onsubmit="return false;">
@@ -7,7 +17,7 @@ import { Search, ChevronDown, ArrowUpDown, SlidersHorizontal } from '@lucide/ast
     <span class="filter-bar__icon" aria-hidden="true">
       <Search size={24} />
     </span>
-    <input type="search" name="q" placeholder="Cari lokasi" autocomplete="off" />
+    <input type="search" name="q" placeholder="Cari hartanah" autocomplete="off" />
   </label>
   <button class="filter-bar__toggle" type="button" aria-expanded="false" aria-controls="filter-bar-buttons" aria-label="Tapis">
     <span class="filter-bar__icon" aria-hidden="true">
@@ -16,7 +26,7 @@ import { Search, ChevronDown, ArrowUpDown, SlidersHorizontal } from '@lucide/ast
     <span class="filter-bar__badge" aria-hidden="true"></span>
   </button>
   <div class="filter-bar__buttons" id="filter-bar-buttons">
-    <div class="filter-bar__dropdown-wrap">
+    <div class="filter-bar__dropdown-wrap" data-filter-group="location">
       <button class="filter-bar__select" type="button" aria-haspopup="listbox" aria-expanded="false" id="location-btn">
         <span>Pilih lokasi</span>
         <span class="filter-bar__icon" aria-hidden="true">
@@ -26,24 +36,44 @@ import { Search, ChevronDown, ArrowUpDown, SlidersHorizontal } from '@lucide/ast
       </button>
       <ul class="filter-bar__dropdown" role="listbox" aria-labelledby="location-btn">
         <li role="option" aria-selected="true" data-value="">Semua</li>
-        <li role="option" aria-selected="false" data-value="Cyberjaya, Selangor">Cyberjaya, Selangor</li>
-        <li role="option" aria-selected="false" data-value="Salak Tinggi, Selangor">Salak Tinggi, Selangor</li>
+        {locationOptions.map(opt => (
+          <li role="option" aria-selected="false" data-value={opt.value}>{opt.label}</li>
+        ))}
       </ul>
     </div>
-    <button class="filter-bar__select" type="button" aria-haspopup="listbox">
-      <span>Pilih jenis</span>
-      <span class="filter-bar__icon" aria-hidden="true">
-        <ChevronDown size={24} />
-      </span>
-      <span class="filter-bar__badge" aria-hidden="true"></span>
-    </button>
-    <button class="filter-bar__select" type="button" aria-haspopup="listbox">
-      <span>Pilih harga</span>
-      <span class="filter-bar__icon" aria-hidden="true">
-        <ChevronDown size={24} />
-      </span>
-      <span class="filter-bar__badge" aria-hidden="true"></span>
-    </button>
+    <div class="filter-bar__dropdown-wrap" data-filter-group="type">
+      <button class="filter-bar__select" type="button" aria-haspopup="listbox" aria-expanded="false" id="type-btn">
+        <span>Pilih jenis</span>
+        <span class="filter-bar__icon" aria-hidden="true">
+          <ChevronDown size={24} />
+        </span>
+        <span class="filter-bar__badge" aria-hidden="true"></span>
+      </button>
+      <ul class="filter-bar__dropdown" role="listbox" aria-labelledby="type-btn">
+        <li role="option" aria-selected="true" data-value="">Semua</li>
+        {typeOptions.map(opt => (
+          <li role="option" aria-selected="false" data-value={opt.value}>{opt.label}</li>
+        ))}
+      </ul>
+    </div>
+    <div class="filter-bar__dropdown-wrap" data-filter-group="price">
+      <button class="filter-bar__select" type="button" aria-haspopup="listbox" aria-expanded="false" id="price-btn">
+        <span>Pilih harga</span>
+        <span class="filter-bar__icon" aria-hidden="true">
+          <ChevronDown size={24} />
+        </span>
+        <span class="filter-bar__badge" aria-hidden="true"></span>
+      </button>
+      <ul class="filter-bar__dropdown" role="listbox" aria-labelledby="price-btn">
+        <li role="option" aria-selected="true" data-value="">Semua</li>
+        <li role="option" aria-selected="false" data-value="200-299">RM 200k – RM 299k</li>
+        <li role="option" aria-selected="false" data-value="300-399">RM 300k – RM 399k</li>
+        <li role="option" aria-selected="false" data-value="400-499">RM 400k – RM 499k</li>
+        <li role="option" aria-selected="false" data-value="500-599">RM 500k – RM 599k</li>
+        <li role="option" aria-selected="false" data-value="600-699">RM 600k – RM 699k</li>
+        <li role="option" aria-selected="false" data-value="700+">RM 700k ke atas</li>
+      </ul>
+    </div>
   </div>
   <button class="filter-bar__sort" type="button" aria-label="Susun mengikut">
     <span class="filter-bar__icon" aria-hidden="true">
@@ -201,7 +231,7 @@ import { Search, ChevronDown, ArrowUpDown, SlidersHorizontal } from '@lucide/ast
     display: block;
   }
 
-  /* ── Location dropdown ─────────────────────────────────── */
+  /* ── Dropdown panels ─────────────────────────────────────── */
   .filter-bar__dropdown-wrap {
     position: relative;
     width: 100%;
@@ -259,51 +289,79 @@ import { Search, ChevronDown, ArrowUpDown, SlidersHorizontal } from '@lucide/ast
 <script>
   const form = document.querySelector<HTMLFormElement>('.filter-bar');
   const toggle = form?.querySelector<HTMLButtonElement>('.filter-bar__toggle');
+  const searchInput = form?.querySelector<HTMLInputElement>('input[name="q"]');
 
   toggle?.addEventListener('click', () => {
     const open = form!.classList.toggle('is-open');
     toggle.setAttribute('aria-expanded', String(open));
   });
 
-  const locationWrap = document.querySelector<HTMLElement>('.filter-bar__dropdown-wrap');
-  const locationBtn  = locationWrap?.querySelector<HTMLButtonElement>('.filter-bar__select');
-  const locationList = locationWrap?.querySelector<HTMLElement>('.filter-bar__dropdown');
-  const locationLabel = locationBtn?.querySelector<HTMLSpanElement>('span:first-child');
-
-  locationBtn?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const open = locationWrap!.classList.toggle('is-open');
-    locationBtn.setAttribute('aria-expanded', String(open));
-  });
-
   document.addEventListener('click', () => {
-    locationWrap?.classList.remove('is-open');
-    locationBtn?.setAttribute('aria-expanded', 'false');
-  });
-
-  locationList?.querySelectorAll<HTMLElement>('[role="option"]').forEach((option) => {
-    option.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const value = option.dataset.value ?? '';
-
-      locationList.querySelectorAll('[role="option"]').forEach(o =>
-        o.setAttribute('aria-selected', 'false')
-      );
-      option.setAttribute('aria-selected', 'true');
-
-      locationLabel!.textContent = value || 'Pilih lokasi';
-      locationBtn!.classList.toggle('has-value', value !== '');
-      toggle?.classList.toggle('has-value', value !== '');
-      filterLocation(value);
-
-      locationWrap!.classList.remove('is-open');
-      locationBtn!.setAttribute('aria-expanded', 'false');
+    form?.querySelectorAll<HTMLElement>('.filter-bar__dropdown-wrap.is-open').forEach(wrap => {
+      wrap.classList.remove('is-open');
+      wrap.querySelector<HTMLButtonElement>('.filter-bar__select')?.setAttribute('aria-expanded', 'false');
     });
   });
 
-  function filterLocation(value: string) {
-    document.querySelectorAll<HTMLElement>('[data-location]').forEach((item) => {
-      item.hidden = value !== '' && item.dataset.location !== value;
+  const activeFilters: Record<string, string> = {};
+
+  function applyFilters(): void {
+    const query = searchInput?.value.toLowerCase().trim() ?? '';
+    document.querySelectorAll<HTMLLIElement>('[data-location]').forEach(item => {
+      let show = true;
+      for (const [group, value] of Object.entries(activeFilters)) {
+        if (value && item.dataset[group] !== value) { show = false; break; }
+      }
+      if (show && query) {
+        const heading  = item.querySelector('.card__heading')?.textContent?.toLowerCase() ?? '';
+        const location = item.querySelector('.card__location')?.textContent?.toLowerCase() ?? '';
+        show = heading.includes(query) || location.includes(query);
+      }
+      item.hidden = !show;
     });
   }
+
+  function updateToggleBadge(): void {
+    toggle?.classList.toggle('has-value', Object.values(activeFilters).some(v => v !== ''));
+  }
+
+  form?.querySelectorAll<HTMLElement>('.filter-bar__dropdown-wrap[data-filter-group]').forEach(wrap => {
+    const group        = wrap.dataset.filterGroup!;
+    const btn          = wrap.querySelector<HTMLButtonElement>('.filter-bar__select');
+    const label        = btn?.querySelector<HTMLSpanElement>('span:first-child');
+    const list         = wrap.querySelector<HTMLElement>('.filter-bar__dropdown');
+    const defaultLabel = label?.textContent?.trim() ?? '';
+
+    activeFilters[group] = '';
+
+    btn?.addEventListener('click', e => {
+      e.stopPropagation();
+      form?.querySelectorAll<HTMLElement>('.filter-bar__dropdown-wrap').forEach(other => {
+        if (other !== wrap) {
+          other.classList.remove('is-open');
+          other.querySelector<HTMLButtonElement>('.filter-bar__select')?.setAttribute('aria-expanded', 'false');
+        }
+      });
+      const open = wrap.classList.toggle('is-open');
+      btn.setAttribute('aria-expanded', String(open));
+    });
+
+    list?.querySelectorAll<HTMLElement>('[role="option"]').forEach(option => {
+      option.addEventListener('click', e => {
+        e.stopPropagation();
+        const value = option.dataset.value ?? '';
+        list.querySelectorAll('[role="option"]').forEach(o => o.setAttribute('aria-selected', 'false'));
+        option.setAttribute('aria-selected', 'true');
+        label!.textContent = value ? (option.textContent ?? defaultLabel) : defaultLabel;
+        btn!.classList.toggle('has-value', value !== '');
+        activeFilters[group] = value;
+        updateToggleBadge();
+        applyFilters();
+        wrap.classList.remove('is-open');
+        btn!.setAttribute('aria-expanded', 'false');
+      });
+    });
+  });
+
+  searchInput?.addEventListener('input', applyFilters);
 </script>
