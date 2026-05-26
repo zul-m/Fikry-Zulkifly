@@ -1,3 +1,3 @@
-import { post } from './post';
+import { newProject } from './newProject';
 
-export const schemaTypes = [post];
+export const schemaTypes = [newProject];
