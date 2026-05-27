@@ -83,12 +83,41 @@ export const newProject = defineType({
       title: "Imej Utama",
       type: "image",
       options: { hotspot: true },
+      validation: (Rule) =>
+        Rule.custom(async (value, context) => {
+          if (!value?.asset?._ref) return true;
+          const client = context.getClient({ apiVersion: "2024-01-01" });
+          const size = await client.fetch(`*[_id == $id][0].size`, {
+            id: value.asset._ref,
+          });
+          if (size > 150 * 1024) {
+            return `Saiz imej (${Math.round(size / 1024)} KB) melebihi had 150 KB, sila kompres imej.`;
+          }
+          return true;
+        }),
     }),
     defineField({
       name: "gallery",
       title: "Galeri",
       type: "array",
-      of: [{ type: "image", options: { hotspot: true } }],
+      of: [
+        {
+          type: "image",
+          options: { hotspot: true },
+          validation: (Rule) =>
+            Rule.custom(async (value, context) => {
+              if (!value?.asset?._ref) return true;
+              const client = context.getClient({ apiVersion: "2024-01-01" });
+              const size = await client.fetch(`*[_id == $id][0].size`, {
+                id: value.asset._ref,
+              });
+              if (size > 150 * 1024) {
+                return `Saiz imej (${Math.round(size / 1024)} KB) melebihi had 150 KB, sila kompres imej.`;
+              }
+              return true;
+            }),
+        },
+      ],
     }),
     defineField({
       name: "registrationOpen",
