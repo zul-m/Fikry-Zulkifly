@@ -25,7 +25,7 @@ const rawProjects = await sanityClient.fetch<{
   priceFrom: number;
   imageUrl: string | null;
 }[]>(`
-  *[_type == "newProject"] | order(publishedAt desc) {
+  *[_type == "newProject" && !(_id in path("drafts.**"))] | order(publishedAt desc) {
     _id,
     "slug": slug.current,
     title,
