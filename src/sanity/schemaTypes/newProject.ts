@@ -1,6 +1,7 @@
 import { defineField, defineType } from "sanity";
 import { AutoSlugInput } from "../components/AutoSlugInput";
 import { RegistrationStatusInput } from "../components/RegistrationStatusInput";
+import { LOCATION_OPTIONS, PROPERTY_TYPE_OPTIONS } from "../constants";
 
 export const newProject = defineType({
   name: "newProject",
@@ -30,7 +31,7 @@ export const newProject = defineType({
       title: "Lokasi",
       type: "string",
       options: {
-        list: [{ title: "Presint 7, Putrajaya", value: "presint-7-putrajaya" }],
+        list: LOCATION_OPTIONS,
       },
       validation: (Rule) => Rule.required(),
     }),
@@ -45,11 +46,7 @@ export const newProject = defineType({
       title: "Jenis Hartanah",
       type: "string",
       options: {
-        list: [
-          { title: "Kondominium", value: "condo" },
-          { title: "Pangsapuri", value: "apartment" },
-          { title: "Teres 2 Tingkat", value: "double-storey-terrace" },
-        ],
+        list: PROPERTY_TYPE_OPTIONS,
         layout: "radio",
       },
       validation: (Rule) => Rule.required(),
@@ -140,10 +137,8 @@ export const newProject = defineType({
       media: "image",
     },
     prepare({ title, subtitle, media }) {
-      const locations: Record<string, string> = {
-        "presint-7-putrajaya": "Presint 7, Putrajaya",
-      };
-      return { title, subtitle: locations[subtitle] ?? subtitle, media };
+      const loc = LOCATION_OPTIONS.find(l => l.value === subtitle);
+      return { title, subtitle: loc?.title ?? subtitle, media };
     },
   },
 });

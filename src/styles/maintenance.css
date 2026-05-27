@@ -1,7 +1,8 @@
 .stage {
   position: relative;
-  height: 100dvh;
-  overflow: hidden;
+  height: auto;
+  min-height: 100dvh;
+  overflow: visible;
   padding-inline: var(--margin);
   padding-block: var(--space-6);
   display: flex;
@@ -69,7 +70,7 @@
   background: var(--lime);
 }
 .display {
-  font-size: var(--font-size-display);
+  font-size: var(--font-size-h1);
   font-weight: var(--font-weight-medium);
   line-height: var(--line-height-small);
   letter-spacing: var(--letter-spacing-tight);
@@ -94,8 +95,8 @@
   position: relative;
   z-index: 2;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-6);
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
   max-width: var(--max-width-main);
   width: 100%;
   margin-inline: auto;
@@ -127,17 +128,16 @@
   color: var(--lime);
 }
 
-@media (max-width: 51.25rem) {
+@media (min-width: 51.25rem) {
   .stage {
-    height: auto;
-    min-height: 100dvh;
-    overflow: visible;
+    height: 100dvh;
+    overflow: hidden;
   }
   .display {
-    font-size: var(--font-size-h1);
+    font-size: var(--font-size-display);
   }
   .meta {
-    grid-template-columns: 1fr;
-    gap: var(--space-5);
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-6);
   }
 }

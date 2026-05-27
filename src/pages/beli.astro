@@ -5,16 +5,10 @@ import FilterBar from '@components/FilterBar.astro';
 import PropertyCard from '@components/PropertyCard.astro';
 import { sanityClient } from 'sanity:client';
 import '@styles/beli.css';
+import { LOCATION_OPTIONS, PROPERTY_TYPE_OPTIONS } from '../sanity/constants';
 
-const locationLabels: Record<string, string> = {
-  "presint-7-putrajaya": "Presint 7, Putrajaya",
-};
-
-const typeLabels: Record<string, string> = {
-  "condo": "Kondominium",
-  "apartment": "Pangsapuri",
-  "double-storey-terrace": "Teres 2 Tingkat",
-};
+const locationLabels = Object.fromEntries(LOCATION_OPTIONS.map(o => [o.value, o.title]));
+const typeLabels = Object.fromEntries(PROPERTY_TYPE_OPTIONS.map(o => [o.value, o.title]));
 
 const rawProjects = await sanityClient.fetch<{
   _id: string;

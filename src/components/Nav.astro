@@ -355,7 +355,6 @@ const { position = 'sticky' } = Astro.props;
     </div>
   </div>
 
-  <div class="nav_dropdown_backdrop" aria-hidden="true"></div>
   <div class="nav_menu_backdrop" aria-hidden="true"></div>
 
 </div>
@@ -534,10 +533,6 @@ const { position = 'sticky' } = Astro.props;
     height: 100%;
     padding-inline: var(--space-3);
     padding-block: 0;
-  }
-
-  .nav_links_text {
-    /* text label */
   }
 
   .nav_links_svg {
@@ -861,7 +856,6 @@ const { position = 'sticky' } = Astro.props;
   /* -----------------------------------------------------------------------
      BACKDROPS
   ----------------------------------------------------------------------- */
-  .nav_dropdown_backdrop,
   .nav_menu_backdrop {
     z-index: 0;
     opacity: 0;
@@ -872,10 +866,6 @@ const { position = 'sticky' } = Astro.props;
     position: absolute;
     inset: 0;
     transition: opacity var(--nav-menu-close-duration) ease;
-  }
-
-  .nav_dropdown_backdrop {
-    display: none;
   }
 
   .nav_menu_backdrop {
@@ -893,9 +883,6 @@ const { position = 'sticky' } = Astro.props;
   ----------------------------------------------------------------------- */
   @container (min-width: 65em) {
     .nav_desktop_wrap {
-      display: block;
-    }
-    .nav_dropdown_backdrop {
       display: block;
     }
     .nav_mobile_wrap,
