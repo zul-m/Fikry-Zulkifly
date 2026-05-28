@@ -760,12 +760,12 @@ p {
 .btn-primary {
   background-color: var(--color-brand-500);
   color: var(--color-light-100);
-  border-color: var(--color-light-200);
+  border-color: var(--color-brand-500);
 }
 .btn-primary:hover {
   background-color: var(--color-brand-600);
   color: var(--color-light-100);
-  border-color: var(--color-light-200);
+  border-color: var(--color-brand-600);
 }
 .btn-secondary {
   background-color: var(--color-light-100);
@@ -775,5 +775,5 @@ p {
 .btn-secondary:hover {
   background-color: var(--color-dark-900);
   color: var(--color-light-100);
-  border-color: var(--color-light-200);
+  border-color: var(--color-dark-900);
 }
