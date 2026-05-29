@@ -1,0 +1,262 @@
+---
+import Layout from '@layouts/Layout.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { Droplets, Flame, Footprints, LayoutGrid, ShoppingBasket, Store, Trees, Utensils } from '@lucide/astro';
+import { sanityClient } from 'sanity:client';
+import '@styles/beli-item.css';
+import { LOCATION_OPTIONS, PROPERTY_TYPE_OPTIONS } from '../../sanity/constants';
+
+type Block = {
+  _type: 'block';
+  _key: string;
+  style?: string;
+  children?: Array<{ _type: string; text: string; marks?: string[] }>;
+};
+
+type Project = {
+  _id: string;
+  title: string;
+  slug: string;
+  developer: string | null;
+  location: string;
+  priceFrom: number;
+  propertyType: string;
+  tenure: string | null;
+  completionYear: number | null;
+  description: Block[] | null;
+  imageUrl: string | null;
+  gallery: string[];
+  registrationOpen: boolean;
+  publishedAt: string | null;
+};
+
+export async function getStaticPaths() {
+  const projects = await sanityClient.fetch<Project[]>(`
+    *[_type == "newProject" && !(_id in path("drafts.**"))] {
+      _id,
+      title,
+      "slug": slug.current,
+      developer,
+      location,
+      priceFrom,
+      propertyType,
+      tenure,
+      completionYear,
+      description,
+      "imageUrl": image.asset->url,
+      "gallery": gallery[].asset->url,
+      registrationOpen,
+      publishedAt
+    }
+  `);
+
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+
+const locationLabel =
+  LOCATION_OPTIONS.find((o) => o.value === project.location)?.title ?? project.location;
+
+const typeLabel =
+  PROPERTY_TYPE_OPTIONS.find((o) => o.value === project.propertyType)?.title ?? project.propertyType;
+
+const tenureLabels: Record<string, string> = {
+  leasehold: 'Pajakan',
+  freehold: 'Pegangan bebas',
+  'malay-reserve': 'Tanah rezab melayu',
+};
+
+const priceFormatted = `RM ${project.priceFrom.toLocaleString('en-MY')}`;
+const tenureLabel = project.tenure ? (tenureLabels[project.tenure] ?? project.tenure) : 'Tanah rezab melayu';
+const galleryUrls = project.gallery?.filter(Boolean) ?? [];
+
+function thumbUrl(index: number): string | undefined {
+  return galleryUrls[index] ?? project.imageUrl ?? undefined;
+}
+
+const crumbs = [
+  { href: '/', label: 'Laman utama' },
+  { href: '/beli', label: 'Beli' },
+  { label: project.title },
+];
+
+function renderBlocks(blocks: Block[]): string {
+  return blocks
+    .map((block) => {
+      if (block._type !== 'block') return '';
+      const inner =
+        block.children
+          ?.map((child) => {
+            let t = child.text;
+            if (child.marks?.includes('strong')) t = `<strong>${t}</strong>`;
+            if (child.marks?.includes('em')) t = `<em>${t}</em>`;
+            return t;
+          })
+          .join('') ?? '';
+      switch (block.style ?? 'normal') {
+        case 'h2':         return `<h2>${inner}</h2>`;
+        case 'h3':         return `<h3>${inner}</h3>`;
+        case 'h4':         return `<h4>${inner}</h4>`;
+        case 'blockquote': return `<blockquote><p>${inner}</p></blockquote>`;
+        default:           return inner ? `<p>${inner}</p>` : '';
+      }
+    })
+    .join('');
+}
+
+const descriptionHtml = project.description?.length
+  ? renderBlocks(project.description)
+  : null;
+
+const infoRows = [
+  { key: 'Hak milik',   value: tenureLabel },
+  { key: 'Bilik tidur', value: '3' },
+  { key: 'Bilik air',   value: '2' },
+  { key: 'Parkir',      value: '1' },
+  { key: 'Saiz',        value: '1,000 kaki persegi' },
+  { key: 'Jenis',       value: typeLabel },
+];
+
+const amenities = [
+  { label: 'Kolam renang',    icon: Droplets      },
+  { label: 'Trek joging',     icon: Footprints     },
+  { label: 'Kawasan barbeku', icon: Flame          },
+  { label: 'Taman permainan', icon: Trees          },
+  { label: 'Mini Mart',       icon: ShoppingBasket },
+  { label: '7 Eleven',        icon: Store          },
+  { label: 'Kedai makan',     icon: Utensils       },
+];
+---
+
+<Layout
+  title={`${project.title} — FZ Property`}
+  description={`Projek baru ${project.title} di ${locationLabel}. Harga dari ${priceFormatted}.`}
+>
+  <section class="item" data-theme="light" aria-labelledby="item-heading">
+    <div class="item-inner">
+      <Breadcrumbs items={crumbs} />
+      <!-- Gallery -->
+      <div class="gallery">
+        <div
+          class="gallery-main"
+          role="img"
+          aria-label={`${project.title} — gambar utama`}
+          style={project.imageUrl ? `background-image: url('${project.imageUrl}')` : undefined}
+        />
+        <div class="gallery-grid">
+          {[0, 1, 2, 3].map((i) => {
+            const url = thumbUrl(i);
+            const isTopRight    = i === 1;
+            const isBottomRight = i === 3;
+            return (
+              <div
+                class:list={[
+                  'gallery-thumb',
+                  isTopRight    && 'gallery-thumb--tr',
+                  isBottomRight && 'gallery-thumb--br',
+                ]}
+                role="img"
+                aria-label={`${project.title} — gambar ${i + 2}`}
+                style={url ? `background-image: url('${url}')` : undefined}
+              >
+                {isBottomRight && (
+                  <button class="btn btn-secondary btn-light gallery-cta" type="button">
+                    <LayoutGrid size={16} aria-hidden="true" />
+                    Lihat semua gambar
+                  </button>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <!-- Body two-column -->
+      <div class="body-cols">
+        <!-- Left: description -->
+        <div class="description">
+          <header class="desc-header">
+            <h1 id="item-heading" class="desc-title">{project.title}</h1>
+            <span class="desc-location">{locationLabel}</span>
+          </header>
+          <div class="desc-body">
+            <!-- Prose -->
+            {descriptionHtml ? (
+              <div class="desc-prose" set:html={descriptionHtml} />
+            ) : (
+              <div class="desc-prose">
+                <p>
+                  {project.title} terletak di {locationLabel} dengan infrastruktur yang lengkap
+                  dan terancang. Ia berdekatan dengan pelbagai pusat sosial dan infrastruktur
+                  ekonomi untuk setiap keluarga, di samping menyediakan kehidupan yang lebih selesa.
+                </p>
+                <p>
+                  Dilengkapi dengan teknologi rumah pintar berserta sekuriti ketat 24 jam,
+                  kehidupan anda lebih selamat dan terjamin di samping anda mampu menikmati
+                  kehijauan alam semula jadi.
+                </p>
+              </div>
+            )}
+            <!-- Info table -->
+            <section class="desc-section" aria-labelledby="info-lanjut-label">
+              <h2 class="section-heading" id="info-lanjut-label">Info lanjut</h2>
+              <div class="info-table" role="table" aria-label="Maklumat hartanah">
+                {infoRows.map(({ key, value }) => (
+                  <>
+                    <div class="cell key" role="rowheader">{key}</div>
+                    <div class="cell val" role="cell">{value}</div>
+                  </>
+                ))}
+                <div class="cell key amenities" role="rowheader">Kemudahan</div>
+                <div class="cell val amenities" role="cell">
+                  <ul class="amenity-list">
+                    {amenities.map(({ label, icon: Icon }) => (
+                      <li>
+                        <Icon size={16} aria-hidden="true" class="amenity-icon" />
+                        {label}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </section>
+            <!-- Lokasi -->
+            <section class="desc-section" aria-labelledby="lokasi-heading">
+              <h2 class="section-heading" id="lokasi-heading">Lokasi</h2>
+              <div
+                class="lokasi-map"
+                role="img"
+                aria-label={`Peta lokasi ${project.title}`}
+                style={project.imageUrl ? `background-image: url('${project.imageUrl}')` : undefined}
+              />
+            </section>
+          </div>
+        </div>
+        <!-- Right: sticky info card -->
+        <aside class="info-card" aria-label="Ringkasan hartanah">
+          <div class="info-card-meta">
+            <div class="info-card-info">
+              <span class="info-card-tag">Projek baru</span>
+              <span class="info-card-price">{priceFormatted}</span>
+            </div>
+            <div class="info-card-title-block">
+              <h2 class="info-card-title">{project.title}</h2>
+              <span class="info-card-location">{locationLabel}</span>
+            </div>
+          </div>
+          <div class="info-card-actions">
+            <a href="#contact" class="btn btn-primary">Hubungi Saya</a>
+            <a href="#contact" class="btn btn-secondary">Daftar Minat</a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</Layout>
