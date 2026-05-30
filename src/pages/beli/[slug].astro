@@ -242,11 +242,13 @@ const amenities = [
             <!-- Lokasi -->
             <section class="desc-section" aria-labelledby="lokasi-heading">
               <h2 class="section-heading" id="lokasi-heading">Lokasi</h2>
-              <div
+              <iframe
                 class="lokasi-map"
-                role="img"
-                aria-label={`Peta lokasi ${project.title}`}
-                style={project.imageUrl ? `background-image: url('${project.imageUrl}')` : undefined}
+                loading="lazy"
+                allowfullscreen
+                referrerpolicy="no-referrer-when-downgrade"
+                src={`https://maps.google.com/maps?q=${encodeURIComponent(`${project.title}, ${locationLabel}`)}&output=embed`}
+                title={`Peta lokasi ${project.title}`}
               />
             </section>
           </div>

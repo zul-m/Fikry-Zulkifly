@@ -281,10 +281,7 @@
   width: 100%;
   aspect-ratio: 16 / 7;
   border-radius: var(--radius-main);
-  background-color: var(--theme-background);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  border: var(--border-width-main) solid var(--theme-border);
 }
 
 @media (min-width: 51.25rem) {
