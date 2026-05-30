@@ -1,7 +1,7 @@
 ---
 import Layout from '@layouts/Layout.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
-import { Droplets, Flame, Footprints, LayoutGrid, ShoppingBasket, Store, Trees, Utensils } from '@lucide/astro';
+import { Bath, BedDouble, Car, ChevronDown, Droplets, Flame, Footprints, LayoutGrid, Ruler, ShoppingBasket, Store, Trees, Utensils } from '@lucide/astro';
 import { sanityClient } from 'sanity:client';
 import '@styles/beli-item.css';
 import { LOCATION_OPTIONS, PROPERTY_TYPE_OPTIONS } from '../../sanity/constants';
@@ -76,6 +76,11 @@ const tenureLabels: Record<string, string> = {
 
 const priceFormatted = `RM ${project.priceFrom.toLocaleString('en-MY')}`;
 const tenureLabel = project.tenure ? (tenureLabels[project.tenure] ?? project.tenure) : 'Tanah rezab melayu';
+const loanPrincipal = project.priceFrom * 0.9;
+const monthlyRate = 0.045 / 12;
+const n = 35 * 12;
+const monthlyPayment = loanPrincipal * (monthlyRate * Math.pow(1 + monthlyRate, n)) / (Math.pow(1 + monthlyRate, n) - 1);
+const monthlyPaymentFormatted = `RM ${Math.round(monthlyPayment).toLocaleString('en-MY')}`;
 const galleryUrls = project.gallery?.filter(Boolean) ?? [];
 
 function thumbUrl(index: number): string | undefined {
@@ -115,6 +120,13 @@ function renderBlocks(blocks: Block[]): string {
 const descriptionHtml = project.description?.length
   ? renderBlocks(project.description)
   : null;
+
+const cardSpecs = [
+  { label: 'Bilik tidur', value: '3',        icon: BedDouble },
+  { label: 'Bilik air',   value: '2',        icon: Bath      },
+  { label: 'Parkir',      value: '1',        icon: Car       },
+  { label: 'Saiz',        value: '1,000 kp', icon: Ruler     },
+];
 
 const infoRows = [
   { key: 'Hak milik',   value: tenureLabel },
@@ -169,7 +181,7 @@ const amenities = [
               >
                 {isBottomRight && (
                   <button class="btn btn-secondary btn-light gallery-cta" type="button">
-                    <LayoutGrid size={16} aria-hidden="true" />
+                    <LayoutGrid size={20} aria-hidden="true" />
                     Lihat semua gambar
                   </button>
                 )}
@@ -244,16 +256,34 @@ const amenities = [
           <div class="info-card-meta">
             <div class="info-card-info">
               <span class="info-card-tag">Projek baru</span>
-              <span class="info-card-price">{priceFormatted}</span>
+              <span class="info-card-price">Dari {priceFormatted}</span>
             </div>
             <div class="info-card-title-block">
               <h2 class="info-card-title">{project.title}</h2>
               <span class="info-card-location">{locationLabel}</span>
             </div>
           </div>
+          <div class="info-card-specs">
+            {cardSpecs.map(({ label, value, icon: Icon }) => (
+              <div class="spec-item">
+                <Icon size={18} aria-hidden="true" class="spec-icon" />
+                <span class="spec-value">{value}</span>
+                <span class="spec-label">{label}</span>
+              </div>
+            ))}
+          </div>
+          <details class="calculator-section" open>
+            <summary class="calculator-trigger">
+              Anggaran bayaran bulanan
+              <ChevronDown size={16} class="calculator-chevron" aria-hidden="true" />
+            </summary>
+            <div class="calculator-body">
+              <span class="calculator-result-amount">{monthlyPaymentFormatted}<span class="calculator-result-unit">/bulan</span></span>
+              <p class="info-card-disclaimer">Kiraan berdasarkan 10% dp, 4.5% p.a., 35 thn.</p>
+            </div>
+          </details>
           <div class="info-card-actions">
             <a href="#contact" class="btn btn-primary">Hubungi Saya</a>
-            <a href="#contact" class="btn btn-secondary">Daftar Minat</a>
           </div>
         </aside>
       </div>

@@ -293,16 +293,104 @@
   }
 }
 
-/* STICKY INFO CARD (right column) */
+/* INFO CARD SPECS */
+
+.info-card-specs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-2);
+  border-top: var(--border-width-main) solid var(--theme-border);
+  padding-top: var(--space-5);
+}
+
+.spec-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  text-align: center;
+}
+
+.spec-icon {
+  color: color-mix(in srgb, var(--theme-text) 60%, transparent);
+  flex-shrink: 0;
+}
+
+.spec-value {
+  font-family: var(--font-family);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-huge);
+  color: var(--theme-text);
+}
+
+.spec-label {
+  font-family: var(--font-family);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-large);
+  color: color-mix(in srgb, var(--theme-text) 60%, transparent);
+}
+
+/* CALCULATOR SECTION */
+
+.calculator-section {
+  border-top: var(--border-width-main) solid var(--theme-border);
+  padding-top: var(--space-5);
+}
+
+.calculator-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  list-style: none;
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-large);
+  color: color-mix(in srgb, var(--theme-text) 60%, transparent);
+}
+
+.calculator-trigger::-webkit-details-marker {
+  display: none;
+}
+
+.calculator-chevron {
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.calculator-section[open] .calculator-chevron {
+  transform: rotate(180deg);
+}
+
+.calculator-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-top: var(--space-3);
+}
+
+.calculator-result-amount {
+  font-family: var(--font-family);
+  font-size: var(--font-size-h5);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-medium);
+  letter-spacing: var(--letter-spacing-tight);
+  color: var(--theme-text);
+}
+
+/* INFO CARD */
 
 .info-card {
   border-radius: var(--radius-main);
   border: var(--border-width-main) solid var(--theme-border);
   background: var(--theme-background-2);
+  box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.25);
   padding: var(--space-6);
   display: flex;
   flex-direction: column;
-  gap: var(--space-7);
+  gap: var(--space-5);
 }
 
 @media (min-width: 51.25rem) {
@@ -316,35 +404,32 @@
 .info-card-meta {
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
+  gap: var(--space-2);
 }
 
 .info-card-info {
   display: flex;
-  flex-direction: row;
   align-items: center;
-  gap: var(--space-4);
+  gap: var(--space-3);
 }
 
 .info-card-tag {
   display: inline-flex;
   align-items: center;
   height: 2.1875rem;
-  padding-inline: var(--space-3);
+  padding: 0 var(--space-2);
   border-radius: var(--radius-small);
-  background: var(--theme-background);
+  background: var(--color-dark-900);
   font-family: var(--font-family);
-  font-size: var(--font-size-body);
-  font-weight: var(--font-weight-bold);
-  line-height: 1;
-  color: var(--theme-text);
-  white-space: nowrap;
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-large);
+  color: var(--theme-background-2);
 }
 
 .info-card-price {
   font-family: var(--font-family);
   font-size: var(--font-size-body);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   line-height: var(--line-height-huge);
   color: var(--theme-text);
 }
@@ -352,12 +437,13 @@
 .info-card-title-block {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-1);
+  margin-top: var(--space-3);
 }
 
 .info-card-title {
   font-family: var(--font-family);
-  font-size: var(--font-size-h4);
+  font-size: var(--font-size-h5);
   font-weight: var(--font-weight-medium);
   line-height: var(--line-height-medium);
   letter-spacing: var(--letter-spacing-tight);
@@ -379,19 +465,50 @@
 }
 
 .info-card-location {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
   font-family: var(--font-family);
-  font-size: var(--font-size-large);
-  line-height: var(--line-height-huge);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-large);
   color: var(--theme-text);
+}
+
+.info-card-location-icon {
+  flex-shrink: 0;
 }
 
 .info-card-actions {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-2);
 }
 
 .info-card-actions .btn {
   width: 100%;
   justify-content: center;
+}
+
+.info-card-disclaimer {
+  margin: 0;
+  font-family: var(--font-family);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-large);
+  color: color-mix(in srgb, var(--theme-text) 40%, transparent);
+  text-align: start;
+}
+
+.calculator-result-asterisk {
+  font-size: var(--font-size-small);
+  vertical-align: super;
+  line-height: 1;
+}
+
+.calculator-result-unit {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-regular);
+  letter-spacing: var(--letter-spacing-normal);
+  color: color-mix(in srgb, var(--theme-text) 60%, transparent);
+  margin-left: 0.125rem;
 }
