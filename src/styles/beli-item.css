@@ -539,6 +539,7 @@
   letter-spacing: var(--letter-spacing-tight);
   color: var(--theme-text);
   margin: 0;
+  text-wrap: balance;
   display: flow-root;
 }
 
@@ -555,18 +556,11 @@
 }
 
 .info-card-location {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
   font-family: var(--font-family);
   font-size: var(--font-size-small);
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-large);
   color: var(--theme-text);
-}
-
-.info-card-location-icon {
-  flex-shrink: 0;
 }
 
 .info-card-actions {
