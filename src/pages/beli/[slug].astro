@@ -1,7 +1,7 @@
 ---
 import Layout from '@layouts/Layout.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
-import { Bath, BedDouble, Car, ChevronDown, ChevronLeft, ChevronRight, Droplets, Flame, Footprints, LayoutGrid, Ruler, ShoppingBasket, Store, Trees, Utensils, X } from '@lucide/astro';
+import { ArrowLeft, Bath, BedDouble, Car, ChevronDown, ChevronLeft, ChevronRight, Droplets, Flame, Footprints, LayoutGrid, Ruler, ShoppingBasket, Store, Trees, Utensils, X } from '@lucide/astro';
 import { sanityClient } from 'sanity:client';
 import '@styles/beli-item.css';
 import { LOCATION_OPTIONS, PROPERTY_TYPE_OPTIONS } from '../../sanity/constants';
@@ -159,16 +159,28 @@ const amenities = [
 >
   <section class="item" data-theme="light" aria-labelledby="item-heading">
     <div class="item-inner">
-      <Breadcrumbs items={crumbs} />
+      <div class="item-breadcrumbs">
+        <Breadcrumbs items={crumbs} />
+      </div>
       <!-- Gallery -->
       <div class="gallery">
         <div
           class="gallery-main"
-          role="img"
-          aria-label={`${project.title} — gambar utama`}
-          style={project.imageUrl ? `background-image: url('${project.imageUrl}')` : undefined}
-          data-lightbox-index={project.imageUrl ? imageIndexMap.get(project.imageUrl) : undefined}
-        />
+          aria-label={`${project.title} — galeri gambar`}
+          data-lightbox-index={allImages.length > 0 ? 0 : undefined}
+        >
+          <a class="item-back" href="/beli" aria-label="Kembali ke halaman sebelumnya">
+            <ArrowLeft size={20} aria-hidden="true" />
+          </a>
+          <div class="gallery-track">
+            {allImages.map((url) => (
+              <div class="gallery-slide" style={`background-image: url('${url}')`} />
+            ))}
+          </div>
+          {allImages.length > 1 && (
+            <span class="gallery-counter" aria-live="polite">1 / {allImages.length}</span>
+          )}
+        </div>
         <div class="gallery-grid">
           {[0, 1, 2, 3].map((i) => {
             const url = thumbUrl(i);
@@ -303,7 +315,6 @@ const amenities = [
       </div>
     </div>
   </section>
-
   {allImages.length > 0 && (
     <dialog id="gallery-lightbox" class="lightbox" aria-label="Galeri gambar">
       <div class="lightbox-slides">
@@ -339,6 +350,60 @@ const amenities = [
 </Layout>
 
 <script>
+  // Mobile gallery carousel
+  const galleryMain = document.querySelector<HTMLElement>('.gallery-main');
+  const track = galleryMain?.querySelector<HTMLElement>('.gallery-track');
+  const total = galleryMain?.querySelectorAll('.gallery-slide').length ?? 0;
+  const counter = document.querySelector<HTMLElement>('.gallery-counter');
+  let galleryIdx = 0;
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let isDragging = false;
+  let didSwipe = false;
+
+  function showGallerySlide(index: number, animated = true) {
+    if (total === 0 || !track) return;
+    galleryIdx = ((index % total) + total) % total;
+    track.style.transition = animated ? 'transform 0.3s ease' : 'none';
+    track.style.transform = `translateX(-${galleryIdx * 100}%)`;
+    if (galleryMain) galleryMain.dataset.lightboxIndex = String(galleryIdx);
+    if (counter) counter.textContent = `${galleryIdx + 1} / ${total}`;
+  }
+
+  if (galleryMain && track) {
+    galleryMain.addEventListener('touchstart', (e) => {
+      const t = (e as TouchEvent).touches[0];
+      touchStartX = t.clientX;
+      touchStartY = t.clientY;
+      isDragging = true;
+      didSwipe = false;
+      track.style.transition = 'none';
+    }, { passive: true });
+
+    galleryMain.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      const t = (e as TouchEvent).touches[0];
+      const dx = t.clientX - touchStartX;
+      const dy = t.clientY - touchStartY;
+      if (Math.abs(dx) > Math.abs(dy)) {
+        e.preventDefault();
+        didSwipe = true;
+        track.style.transform = `translateX(calc(-${galleryIdx * 100}% + ${dx}px))`;
+      }
+    }, { passive: false });
+
+    galleryMain.addEventListener('touchend', (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      const dx = (e as TouchEvent).changedTouches[0].clientX - touchStartX;
+      if (didSwipe && Math.abs(dx) > 50) {
+        showGallerySlide(dx < 0 ? galleryIdx + 1 : galleryIdx - 1);
+      } else {
+        showGallerySlide(galleryIdx); // snap back
+      }
+    });
+  }
+
   const dialog = document.getElementById('gallery-lightbox') as HTMLDialogElement | null;
 
   if (dialog) {
@@ -362,6 +427,7 @@ const amenities = [
 
     document.querySelectorAll<HTMLElement>('[data-lightbox-index]').forEach(el => {
       el.addEventListener('click', () => {
+        if (el === galleryMain && didSwipe) return;
         const idx = parseInt(el.dataset.lightboxIndex ?? '0', 10);
         show(idx);
         dialog.showModal();
