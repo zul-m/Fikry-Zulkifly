@@ -115,6 +115,7 @@ export const newProject = defineType({
             }),
         },
       ],
+      validation: (Rule) => Rule.min(4).error("Galeri mesti mengandungi sekurang-kurangnya 4 imej."),
     }),
     defineField({
       name: "registrationOpen",

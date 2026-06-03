@@ -1,0 +1,457 @@
+---
+import Layout from '@layouts/Layout.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { ArrowLeft, Bath, BedDouble, Car, ChevronDown, ChevronLeft, ChevronRight, Droplets, Flame, Footprints, LayoutGrid, Ruler, ShoppingBasket, Store, Trees, Utensils, X } from '@lucide/astro';
+import { sanityClient } from 'sanity:client';
+import '@styles/beli-item.css';
+import { LOCATION_OPTIONS, PROPERTY_TYPE_OPTIONS } from '../../sanity/constants';
+
+type Block = {
+  _type: 'block';
+  _key: string;
+  style?: string;
+  children?: Array<{ _type: string; text: string; marks?: string[] }>;
+};
+
+type Project = {
+  _id: string;
+  title: string;
+  slug: string;
+  developer: string | null;
+  location: string;
+  priceFrom: number;
+  propertyType: string;
+  tenure: string | null;
+  completionYear: number | null;
+  description: Block[] | null;
+  imageUrl: string | null;
+  gallery: string[];
+  registrationOpen: boolean;
+  publishedAt: string | null;
+};
+
+export async function getStaticPaths() {
+  const projects = await sanityClient.fetch<Project[]>(`
+    *[_type == "newProject" && !(_id in path("drafts.**"))] {
+      _id,
+      title,
+      "slug": slug.current,
+      developer,
+      location,
+      priceFrom,
+      propertyType,
+      tenure,
+      completionYear,
+      description,
+      "imageUrl": image.asset->url,
+      "gallery": gallery[].asset->url,
+      registrationOpen,
+      publishedAt
+    }
+  `);
+
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+
+const locationLabel =
+  LOCATION_OPTIONS.find((o) => o.value === project.location)?.title ?? project.location;
+
+const typeLabel =
+  PROPERTY_TYPE_OPTIONS.find((o) => o.value === project.propertyType)?.title ?? project.propertyType;
+
+const tenureLabels: Record<string, string> = {
+  leasehold: 'Pajakan',
+  freehold: 'Pegangan bebas',
+  'malay-reserve': 'Tanah rezab melayu',
+};
+
+const priceFormatted = `RM ${project.priceFrom.toLocaleString('en-MY')}`;
+const tenureLabel = project.tenure ? (tenureLabels[project.tenure] ?? project.tenure) : 'Tanah rezab melayu';
+const loanPrincipal = project.priceFrom * 0.9;
+const monthlyRate = 0.045 / 12;
+const n = 35 * 12;
+const monthlyPayment = loanPrincipal * (monthlyRate * Math.pow(1 + monthlyRate, n)) / (Math.pow(1 + monthlyRate, n) - 1);
+const monthlyPaymentFormatted = `RM ${Math.round(monthlyPayment).toLocaleString('en-MY')}`;
+const galleryUrls = project.gallery?.filter(Boolean) ?? [];
+const allImages = [...new Set([
+  ...(project.imageUrl ? [project.imageUrl] : []),
+  ...galleryUrls,
+])];
+const imageIndexMap = new Map(allImages.map((url, i) => [url, i]));
+
+function thumbUrl(index: number): string | undefined {
+  return galleryUrls[index] ?? project.imageUrl ?? undefined;
+}
+
+const crumbs = [
+  { href: '/', label: 'Laman utama' },
+  { href: '/beli', label: 'Beli' },
+  { label: project.title },
+];
+
+function renderBlocks(blocks: Block[]): string {
+  return blocks
+    .map((block) => {
+      if (block._type !== 'block') return '';
+      const inner =
+        block.children
+          ?.map((child) => {
+            let t = child.text;
+            if (child.marks?.includes('strong')) t = `<strong>${t}</strong>`;
+            if (child.marks?.includes('em')) t = `<em>${t}</em>`;
+            return t;
+          })
+          .join('') ?? '';
+      switch (block.style ?? 'normal') {
+        case 'h2':         return `<h2>${inner}</h2>`;
+        case 'h3':         return `<h3>${inner}</h3>`;
+        case 'h4':         return `<h4>${inner}</h4>`;
+        case 'blockquote': return `<blockquote><p>${inner}</p></blockquote>`;
+        default:           return inner ? `<p>${inner}</p>` : '';
+      }
+    })
+    .join('');
+}
+
+const descriptionHtml = project.description?.length
+  ? renderBlocks(project.description)
+  : null;
+
+const cardSpecs = [
+  { label: 'Bilik tidur', value: '3',        icon: BedDouble },
+  { label: 'Bilik air',   value: '2',        icon: Bath      },
+  { label: 'Parkir',      value: '1',        icon: Car       },
+  { label: 'Saiz',        value: '1,000 kp', icon: Ruler     },
+];
+
+const infoRows = [
+  { key: 'Hak milik',   value: tenureLabel },
+  { key: 'Bilik tidur', value: '3' },
+  { key: 'Bilik air',   value: '2' },
+  { key: 'Parkir',      value: '1' },
+  { key: 'Saiz',        value: '1,000 kaki persegi' },
+  { key: 'Jenis',       value: typeLabel },
+];
+
+const amenities = [
+  { label: 'Kolam renang',    icon: Droplets      },
+  { label: 'Trek joging',     icon: Footprints     },
+  { label: 'Kawasan barbeku', icon: Flame          },
+  { label: 'Taman permainan', icon: Trees          },
+  { label: 'Mini Mart',       icon: ShoppingBasket },
+  { label: '7 Eleven',        icon: Store          },
+  { label: 'Kedai makan',     icon: Utensils       },
+];
+---
+
+<Layout
+  title={`${project.title} — FZ Property`}
+  description={`Projek baru ${project.title} di ${locationLabel}. Harga dari ${priceFormatted}.`}
+>
+  <section class="item" data-theme="light" aria-labelledby="item-heading">
+    <div class="item-inner">
+      <div class="item-breadcrumbs">
+        <Breadcrumbs items={crumbs} />
+      </div>
+      <!-- Gallery -->
+      <div class="gallery">
+        <div
+          class="gallery-main"
+          aria-label={`${project.title} — galeri gambar`}
+          data-lightbox-index={allImages.length > 0 ? 0 : undefined}
+        >
+          <a class="item-back" href="/beli" aria-label="Kembali ke halaman sebelumnya">
+            <ArrowLeft size={20} aria-hidden="true" />
+          </a>
+          <div class="gallery-track">
+            {allImages.map((url) => (
+              <div class="gallery-slide" style={`background-image: url('${url}')`} />
+            ))}
+          </div>
+          {allImages.length > 1 && (
+            <span class="gallery-counter" aria-live="polite">1 / {allImages.length}</span>
+          )}
+        </div>
+        <div class="gallery-grid">
+          {[0, 1, 2, 3].map((i) => {
+            const url = thumbUrl(i);
+            const isTopRight    = i === 1;
+            const isBottomRight = i === 3;
+            return (
+              <div
+                class:list={[
+                  'gallery-thumb',
+                  isTopRight    && 'gallery-thumb--tr',
+                  isBottomRight && 'gallery-thumb--br',
+                ]}
+                role="img"
+                aria-label={`${project.title} — gambar ${i + 2}`}
+                style={url ? `background-image: url('${url}')` : undefined}
+                data-lightbox-index={url ? imageIndexMap.get(url) : undefined}
+              >
+                {isBottomRight && (
+                  <button class="btn btn-secondary btn-light gallery-cta" type="button">
+                    <LayoutGrid size={20} aria-hidden="true" />
+                    Lihat semua gambar
+                  </button>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <!-- Body two-column -->
+      <div class="body-cols">
+        <!-- Left: description -->
+        <div class="description">
+          <header class="desc-header">
+            <h1 id="item-heading" class="desc-title">{project.title}</h1>
+            <span class="desc-location">{locationLabel}</span>
+          </header>
+          <div class="desc-body">
+            <!-- Prose -->
+            {descriptionHtml ? (
+              <div class="desc-prose" set:html={descriptionHtml} />
+            ) : (
+              <div class="desc-prose">
+                <p>
+                  {project.title} terletak di {locationLabel} dengan infrastruktur yang lengkap
+                  dan terancang. Ia berdekatan dengan pelbagai pusat sosial dan infrastruktur
+                  ekonomi untuk setiap keluarga, di samping menyediakan kehidupan yang lebih selesa.
+                </p>
+                <p>
+                  Dilengkapi dengan teknologi rumah pintar berserta sekuriti ketat 24 jam,
+                  kehidupan anda lebih selamat dan terjamin di samping anda mampu menikmati
+                  kehijauan alam semula jadi.
+                </p>
+              </div>
+            )}
+            <!-- Info table -->
+            <section class="desc-section" aria-labelledby="info-lanjut-label">
+              <h2 class="section-heading" id="info-lanjut-label">Info lanjut</h2>
+              <div class="info-table" role="table" aria-label="Maklumat hartanah">
+                {infoRows.map(({ key, value }) => (
+                  <>
+                    <div class="cell key" role="rowheader">{key}</div>
+                    <div class="cell val" role="cell">{value}</div>
+                  </>
+                ))}
+                <div class="cell key amenities" role="rowheader">Kemudahan</div>
+                <div class="cell val amenities" role="cell">
+                  <ul class="amenity-list">
+                    {amenities.map(({ label, icon: Icon }) => (
+                      <li>
+                        <Icon size={16} aria-hidden="true" class="amenity-icon" />
+                        {label}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </section>
+            <!-- Lokasi -->
+            <section class="desc-section" aria-labelledby="lokasi-heading">
+              <h2 class="section-heading" id="lokasi-heading">Lokasi</h2>
+              <iframe
+                class="lokasi-map"
+                loading="lazy"
+                allowfullscreen
+                referrerpolicy="no-referrer-when-downgrade"
+                src={`https://maps.google.com/maps?q=${encodeURIComponent(`${project.title}, ${locationLabel}`)}&output=embed`}
+                title={`Peta lokasi ${project.title}`}
+              />
+            </section>
+          </div>
+        </div>
+        <!-- Right: sticky info card -->
+        <aside class="info-card" aria-label="Ringkasan hartanah">
+          <div class="info-card-meta">
+            <div class="info-card-info">
+              <span class="info-card-tag">Projek baru</span>
+              <span class="info-card-price">Dari {priceFormatted}</span>
+            </div>
+            <div class="info-card-title-block">
+              <h2 class="info-card-title">{project.title}</h2>
+              <span class="info-card-location">{locationLabel}</span>
+            </div>
+          </div>
+          <div class="info-card-specs">
+            {cardSpecs.map(({ label, value, icon: Icon }) => (
+              <div class="spec-item">
+                <Icon size={18} aria-hidden="true" class="spec-icon" />
+                <span class="spec-value">{value}</span>
+                <span class="spec-label">{label}</span>
+              </div>
+            ))}
+          </div>
+          <details class="calculator-section" open>
+            <summary class="calculator-trigger">
+              Anggaran bayaran bulanan
+              <ChevronDown size={16} class="calculator-chevron" aria-hidden="true" />
+            </summary>
+            <div class="calculator-body">
+              <span class="calculator-result-amount">{monthlyPaymentFormatted}<span class="calculator-result-unit">/bulan</span></span>
+              <p class="info-card-disclaimer">Kiraan berdasarkan 10% dp, 4.5% p.a., 35 thn.</p>
+            </div>
+          </details>
+          <div class="info-card-actions">
+            <a href="#contact" class="btn btn-primary">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+              </svg>
+              Hubungi Saya
+            </a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+  {allImages.length > 0 && (
+    <dialog id="gallery-lightbox" class="lightbox" aria-label="Galeri gambar">
+      <div class="lightbox-slides">
+        {allImages.map((url, i) => (
+          <div class:list={['lightbox-slide', i === 0 && 'is-active']}>
+            <img
+              src={url}
+              alt={`${project.title} — gambar ${i + 1}`}
+              class="lightbox-img"
+              draggable="false"
+            />
+          </div>
+        ))}
+      </div>
+      <button class="lightbox-btn lightbox-close" aria-label="Tutup galeri" type="button">
+        <X size={20} aria-hidden="true" />
+      </button>
+      {allImages.length > 1 && (
+        <>
+          <button class="lightbox-btn lightbox-prev" aria-label="Gambar sebelumnya" type="button">
+            <ChevronLeft size={22} aria-hidden="true" />
+          </button>
+          <button class="lightbox-btn lightbox-next" aria-label="Gambar seterusnya" type="button">
+            <ChevronRight size={22} aria-hidden="true" />
+          </button>
+          <div class="lightbox-counter-wrap">
+            <span class="lightbox-counter" aria-live="polite">1 / {allImages.length}</span>
+          </div>
+        </>
+      )}
+    </dialog>
+  )}
+</Layout>
+
+<script>
+  // Mobile gallery carousel
+  const galleryMain = document.querySelector<HTMLElement>('.gallery-main');
+  const track = galleryMain?.querySelector<HTMLElement>('.gallery-track');
+  const total = galleryMain?.querySelectorAll('.gallery-slide').length ?? 0;
+  const counter = document.querySelector<HTMLElement>('.gallery-counter');
+  let galleryIdx = 0;
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let isDragging = false;
+  let didSwipe = false;
+
+  function showGallerySlide(index: number, animated = true) {
+    if (total === 0 || !track) return;
+    galleryIdx = ((index % total) + total) % total;
+    track.style.transition = animated ? 'transform 0.3s ease' : 'none';
+    track.style.transform = `translateX(-${galleryIdx * 100}%)`;
+    if (galleryMain) galleryMain.dataset.lightboxIndex = String(galleryIdx);
+    if (counter) counter.textContent = `${galleryIdx + 1} / ${total}`;
+  }
+
+  if (galleryMain && track) {
+    galleryMain.addEventListener('touchstart', (e) => {
+      const t = (e as TouchEvent).touches[0];
+      touchStartX = t.clientX;
+      touchStartY = t.clientY;
+      isDragging = true;
+      didSwipe = false;
+      track.style.transition = 'none';
+    }, { passive: true });
+
+    galleryMain.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      const t = (e as TouchEvent).touches[0];
+      const dx = t.clientX - touchStartX;
+      const dy = t.clientY - touchStartY;
+      if (Math.abs(dx) > Math.abs(dy)) {
+        e.preventDefault();
+        didSwipe = true;
+        track.style.transform = `translateX(calc(-${galleryIdx * 100}% + ${dx}px))`;
+      }
+    }, { passive: false });
+
+    galleryMain.addEventListener('touchend', (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      const dx = (e as TouchEvent).changedTouches[0].clientX - touchStartX;
+      if (didSwipe && Math.abs(dx) > 50) {
+        showGallerySlide(dx < 0 ? galleryIdx + 1 : galleryIdx - 1);
+      } else {
+        showGallerySlide(galleryIdx); // snap back
+      }
+    });
+  }
+
+  const dialog = document.getElementById('gallery-lightbox') as HTMLDialogElement | null;
+
+  if (dialog) {
+    const slides = Array.from(dialog.querySelectorAll<HTMLElement>('.lightbox-slide'));
+    const counter = dialog.querySelector('.lightbox-counter');
+    let current = 0;
+
+    function show(index: number) {
+      slides[current].classList.remove('is-active');
+      current = ((index % slides.length) + slides.length) % slides.length;
+      slides[current].classList.add('is-active');
+      if (counter) counter.textContent = `${current + 1} / ${slides.length}`;
+    }
+
+    document.querySelector('.gallery-cta')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      show(0);
+      dialog.showModal();
+      document.body.style.overflow = 'hidden';
+    });
+
+    document.querySelectorAll<HTMLElement>('[data-lightbox-index]').forEach(el => {
+      el.addEventListener('click', () => {
+        if (el === galleryMain && didSwipe) return;
+        const idx = parseInt(el.dataset.lightboxIndex ?? '0', 10);
+        show(idx);
+        dialog.showModal();
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    function closeDialog() {
+      dialog!.close();
+      document.body.style.overflow = '';
+    }
+
+    dialog.querySelector('.lightbox-prev')?.addEventListener('click', () => show(current - 1));
+    dialog.querySelector('.lightbox-next')?.addEventListener('click', () => show(current + 1));
+    dialog.querySelector('.lightbox-close')?.addEventListener('click', closeDialog);
+
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) closeDialog();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (!dialog.open) return;
+      if (e.key === 'ArrowLeft') show(current - 1);
+      if (e.key === 'ArrowRight') show(current + 1);
+    });
+  }
+</script>

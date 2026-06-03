@@ -6,7 +6,7 @@
 .buy-inner {
   max-width: var(--max-width-main);
   margin-inline: auto;
-  padding-block: var(--section-main);
+  padding-block: var(--section-small);
   padding-inline: var(--margin);
   display: flex;
   flex-direction: column;
@@ -21,17 +21,11 @@
 
 .buy__grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(auto-fill, minmax(min(20rem, 100%), 1fr));
   gap: var(--space-6);
   list-style: none;
   margin: 0;
   padding: 0;
-}
-@media (min-width: 40rem) {
-  .buy__grid { grid-template-columns: repeat(2, 1fr); }
-}
-@media (min-width: 64rem) {
-  .buy__grid { grid-template-columns: repeat(3, 1fr); }
 }
 
 .sr-only {

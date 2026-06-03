@@ -8,6 +8,7 @@
 - **`--border-width-main`** is the token for hairline/1px-equivalent lines (borders, decorative bars).
 - **`rem` media queries** — breakpoints in `rem`, not `px` (e.g. `51.25rem` not `820px`).
 - **Smallest viewport is `20rem` (320px)** — always verify that layout, typography, and spacing hold at that width before scaling up.
+- **Intrinsic grid sizing over viewport breakpoints** — for multi-column grids, prefer `repeat(auto-fill, minmax(min(Xrem, 100%), 1fr))` over media queries. The column count adapts to available container space, not the viewport, so the same component works correctly in a sidebar, a card, or full-width without extra breakpoints. Choose `X` as the minimum column width at which content fits without wrapping. Use media/container queries only when the change is not a column-count adjustment (e.g. `flex-direction`, visibility, typography).
 
 ## File Structure
 

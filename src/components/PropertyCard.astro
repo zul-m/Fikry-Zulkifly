@@ -31,14 +31,13 @@ const img  = property.image ?? "/images/modern-house.png";
     <div class="card__body-inner">
       <div class="card__info">
         <span class="card__tag">{property.status}</span>
-        <span class="card__price">{property.price}</span>
+        <span class="card__price">Dari {property.price}</span>
       </div>
       <div class="card__meta">
         <h3 class="card__heading">{property.title}</h3>
         <span class="card__location">{property.location}</span>
       </div>
     </div>
-
     <span class="card__cta">
       Lihat Projek
       <span class="card__cta-icon" aria-hidden="true">
@@ -52,6 +51,7 @@ const img  = property.image ?? "/images/modern-house.png";
   .card {
     display: flex;
     flex-direction: column;
+    height: 100%;
     border-radius: var(--radius-main);
     border: var(--border-width-main) solid var(--theme-border);
     background: var(--theme-background-2);
@@ -87,7 +87,7 @@ const img  = property.image ?? "/images/modern-house.png";
   .card__body-inner {
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
+    gap: var(--space-2);
   }
 
   .card__info {
@@ -102,7 +102,7 @@ const img  = property.image ?? "/images/modern-house.png";
     height: 2.1875rem;
     padding: 0 var(--space-2);
     border-radius: var(--radius-small);
-    background: var(--color-brand-300);
+    background: var(--color-dark-900);
     font-family: var(--font-family);
     font-size: var(--font-size-small);
     line-height: var(--line-height-large);
@@ -121,16 +121,21 @@ const img  = property.image ?? "/images/modern-house.png";
     display: flex;
     flex-direction: column;
     gap: var(--space-1);
+    margin-top: var(--space-3);
   }
 
   .card__heading {
     margin: 0;
     font-family: var(--font-family);
-    font-size: var(--font-size-h4);
+    font-size: var(--font-size-h5);
+    font-weight: var(--font-weight-medium);
     line-height: var(--line-height-medium);
     letter-spacing: var(--letter-spacing-tight);
     color: var(--theme-text);
-    text-wrap: balance;
+    white-space: nowrap;
+    overflow: clip;
+    overflow-clip-margin: 0.2em;
+    text-overflow: ellipsis;
   }
 
   .card__location {
