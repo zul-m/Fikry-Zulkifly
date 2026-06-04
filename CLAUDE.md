@@ -30,3 +30,4 @@
 - All spacing, typography, color, and layout values come from `src/styles/global.css` tokens.
 - Fluid values use the viewport range `20rem (320px) → 90rem (1440px)`.
 - Do not introduce one-off values when a token already covers the intent.
+- **Component tokens stay in the component** — don't add tokens to `global.css` for component-specific styling. Reference existing global tokens (e.g. `var(--color-dark-800)`) directly in the component's `<style>` block. Only add to `global.css` when a value is genuinely shared across multiple components or pages.
