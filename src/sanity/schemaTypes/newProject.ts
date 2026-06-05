@@ -118,7 +118,7 @@ export const newProject = defineType({
     }),
     defineField({
       name: "tenure",
-      title: "Pegangan",
+      title: "Hak Milik",
       type: "string",
       options: {
         list: [
