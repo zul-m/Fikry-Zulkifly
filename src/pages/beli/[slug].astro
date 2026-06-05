@@ -1,10 +1,10 @@
 ---
 import Layout from '@layouts/Layout.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
-import { ArrowLeft, Bath, BedDouble, Car, ChevronDown, ChevronLeft, ChevronRight, Droplets, Flame, Footprints, LayoutGrid, Ruler, ShoppingBasket, Store, Trees, Utensils, X } from '@lucide/astro';
+import { Aperture, ArrowLeft, Baby, Bath, BedDouble, Building2, Car, ChevronDown, ChevronLeft, ChevronRight, Dumbbell, Flame, Gamepad2, Goal, Landmark, LayoutGrid, Ruler, ToyBrick, Trees, X } from '@lucide/astro';
 import { sanityClient } from 'sanity:client';
 import '@styles/beli-item.css';
-import { LOCATION_OPTIONS, PROPERTY_TYPE_OPTIONS } from '../../sanity/constants';
+import { AMENITY_ICON_OPTIONS, LOCATION_OPTIONS, PROPERTY_TYPE_OPTIONS } from '../../sanity/constants';
 
 type Block = {
   _type: 'block';
@@ -22,11 +22,18 @@ type Project = {
   priceFrom: number;
   propertyType: string;
   tenure: string | null;
-  completionYear: number | null;
+  totalUnits: number | null;
+  size: string | null;
+  bedrooms: number | null;
+  bathrooms: number | null;
+  parking: number | null;
+  completionYear: string | null;
+  ctaLink: string | null;
   description: Block[] | null;
   imageUrl: string | null;
   gallery: string[];
   registrationOpen: boolean;
+  amenities: string[] | null;
   publishedAt: string | null;
 };
 
@@ -41,11 +48,18 @@ export async function getStaticPaths() {
       priceFrom,
       propertyType,
       tenure,
+      totalUnits,
+      size,
+      bedrooms,
+      bathrooms,
+      parking,
       completionYear,
+      ctaLink,
       description,
       "imageUrl": image.asset->url,
       "gallery": gallery[].asset->url,
       registrationOpen,
+      amenities,
       publishedAt
     }
   `);
@@ -127,30 +141,45 @@ const descriptionHtml = project.description?.length
   : null;
 
 const cardSpecs = [
-  { label: 'Bilik tidur', value: '3',        icon: BedDouble },
-  { label: 'Bilik air',   value: '2',        icon: Bath      },
-  { label: 'Parkir',      value: '1',        icon: Car       },
-  { label: 'Saiz',        value: '1,000 kp', icon: Ruler     },
+  ...(project.bedrooms  != null ? [{ label: 'Bilik tidur', value: String(project.bedrooms),          icon: BedDouble }] : []),
+  ...(project.bathrooms != null ? [{ label: 'Bilik air',   value: String(project.bathrooms),         icon: Bath      }] : []),
+  ...(project.parking   != null ? [{ label: 'Parkir',      value: String(project.parking),           icon: Car       }] : []),
+  ...(project.size      != null ? [{ label: 'Saiz',        value: `${project.size} kp`,              icon: Ruler     }] : []),
 ];
 
 const infoRows = [
   { key: 'Hak milik',   value: tenureLabel },
-  { key: 'Bilik tidur', value: '3' },
-  { key: 'Bilik air',   value: '2' },
-  { key: 'Parkir',      value: '1' },
-  { key: 'Saiz',        value: '1,000 kaki persegi' },
+  ...(project.bedrooms     != null ? [{ key: 'Bilik tidur',     value: String(project.bedrooms)               }] : []),
+  ...(project.bathrooms    != null ? [{ key: 'Bilik air',       value: String(project.bathrooms)              }] : []),
+  ...(project.parking      != null ? [{ key: 'Parkir',          value: String(project.parking)                }] : []),
+  ...(project.size         != null ? [{ key: 'Saiz',            value: `${project.size} kaki persegi`         }] : []),
+  ...(project.totalUnits   != null ? [{ key: 'Jumlah unit',     value: `${project.totalUnits} unit`           }] : []),
+  ...(project.completionYear       ? [{ key: 'Tahun siap',      value: project.completionYear                 }] : []),
+  ...(project.developer            ? [{ key: 'Pemaju',          value: project.developer                      }] : []),
   { key: 'Jenis',       value: typeLabel },
 ];
 
-const amenities = [
-  { label: 'Kolam renang',    icon: Droplets      },
-  { label: 'Trek joging',     icon: Footprints     },
-  { label: 'Kawasan barbeku', icon: Flame          },
-  { label: 'Taman permainan', icon: Trees          },
-  { label: 'Mini Mart',       icon: ShoppingBasket },
-  { label: '7 Eleven',        icon: Store          },
-  { label: 'Kedai makan',     icon: Utensils       },
-];
+const AMENITY_ICON_MAP: Record<string, typeof Dumbbell> = {
+  'dumbbell':     Dumbbell,
+  'trees':        Trees,
+  'flame':        Flame,
+  'building-2':   Building2,
+  'gamepad-2':    Gamepad2,
+  'landmark':     Landmark,
+  'goal':         Goal,
+  'aperture':     Aperture,
+  'baby':         Baby,
+  'toy-brick':    ToyBrick,
+};
+
+const amenities = (project.amenities ?? [])
+  .map((value) => {
+    const option = AMENITY_ICON_OPTIONS.find((o) => o.value === value);
+    const icon = AMENITY_ICON_MAP[value];
+    return option && icon ? { label: option.title, icon } : null;
+  })
+  .filter((x): x is { label: string; icon: typeof Dumbbell } => x !== null)
+  .sort((a, b) => a.label.localeCompare(b.label, "ms"));
 ---
 
 <Layout
@@ -219,21 +248,8 @@ const amenities = [
           </header>
           <div class="desc-body">
             <!-- Prose -->
-            {descriptionHtml ? (
+            {descriptionHtml && (
               <div class="desc-prose" set:html={descriptionHtml} />
-            ) : (
-              <div class="desc-prose">
-                <p>
-                  {project.title} terletak di {locationLabel} dengan infrastruktur yang lengkap
-                  dan terancang. Ia berdekatan dengan pelbagai pusat sosial dan infrastruktur
-                  ekonomi untuk setiap keluarga, di samping menyediakan kehidupan yang lebih selesa.
-                </p>
-                <p>
-                  Dilengkapi dengan teknologi rumah pintar berserta sekuriti ketat 24 jam,
-                  kehidupan anda lebih selamat dan terjamin di samping anda mampu menikmati
-                  kehijauan alam semula jadi.
-                </p>
-              </div>
             )}
             <!-- Info table -->
             <section class="desc-section" aria-labelledby="info-lanjut-label">
@@ -304,7 +320,7 @@ const amenities = [
             </div>
           </details>
           <div class="info-card-actions">
-            <a href="#contact" class="btn btn-primary">
+            <a href={project.ctaLink ?? '#contact'} class="btn btn-primary" {...(project.ctaLink ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
               </svg>
