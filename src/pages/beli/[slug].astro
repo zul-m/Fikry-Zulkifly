@@ -1,10 +1,10 @@
 ---
 import Layout from '@layouts/Layout.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
-import { ArrowLeft, Bath, BedDouble, Car, ChevronDown, ChevronLeft, ChevronRight, Droplets, Flame, Footprints, LayoutGrid, Ruler, ShoppingBasket, Store, Trees, Utensils, X } from '@lucide/astro';
+import { Aperture, ArrowLeft, Baby, Bath, BedDouble, Building2, Car, ChevronDown, ChevronLeft, ChevronRight, Dumbbell, Flame, Gamepad2, Goal, Landmark, LayoutGrid, Ruler, ToyBrick, Trees, X } from '@lucide/astro';
 import { sanityClient } from 'sanity:client';
 import '@styles/beli-item.css';
-import { LOCATION_OPTIONS, PROPERTY_TYPE_OPTIONS } from '../../sanity/constants';
+import { AMENITY_ICON_OPTIONS, LOCATION_OPTIONS, PROPERTY_TYPE_OPTIONS } from '../../sanity/constants';
 
 type Block = {
   _type: 'block';
@@ -33,6 +33,7 @@ type Project = {
   imageUrl: string | null;
   gallery: string[];
   registrationOpen: boolean;
+  amenities: string[] | null;
   publishedAt: string | null;
 };
 
@@ -58,6 +59,7 @@ export async function getStaticPaths() {
       "imageUrl": image.asset->url,
       "gallery": gallery[].asset->url,
       registrationOpen,
+      amenities,
       publishedAt
     }
   `);
@@ -157,15 +159,27 @@ const infoRows = [
   { key: 'Jenis',       value: typeLabel },
 ];
 
-const amenities = [
-  { label: 'Kolam renang',    icon: Droplets      },
-  { label: 'Trek joging',     icon: Footprints     },
-  { label: 'Kawasan barbeku', icon: Flame          },
-  { label: 'Taman permainan', icon: Trees          },
-  { label: 'Mini Mart',       icon: ShoppingBasket },
-  { label: '7 Eleven',        icon: Store          },
-  { label: 'Kedai makan',     icon: Utensils       },
-];
+const AMENITY_ICON_MAP: Record<string, typeof Dumbbell> = {
+  'dumbbell':     Dumbbell,
+  'trees':        Trees,
+  'flame':        Flame,
+  'building-2':   Building2,
+  'gamepad-2':    Gamepad2,
+  'landmark':     Landmark,
+  'goal':         Goal,
+  'aperture':     Aperture,
+  'baby':         Baby,
+  'toy-brick':    ToyBrick,
+};
+
+const amenities = (project.amenities ?? [])
+  .map((value) => {
+    const option = AMENITY_ICON_OPTIONS.find((o) => o.value === value);
+    const icon = AMENITY_ICON_MAP[value];
+    return option && icon ? { label: option.title, icon } : null;
+  })
+  .filter((x): x is { label: string; icon: typeof Dumbbell } => x !== null)
+  .sort((a, b) => a.label.localeCompare(b.label, "ms"));
 ---
 
 <Layout
@@ -234,21 +248,8 @@ const amenities = [
           </header>
           <div class="desc-body">
             <!-- Prose -->
-            {descriptionHtml ? (
+            {descriptionHtml && (
               <div class="desc-prose" set:html={descriptionHtml} />
-            ) : (
-              <div class="desc-prose">
-                <p>
-                  {project.title} terletak di {locationLabel} dengan infrastruktur yang lengkap
-                  dan terancang. Ia berdekatan dengan pelbagai pusat sosial dan infrastruktur
-                  ekonomi untuk setiap keluarga, di samping menyediakan kehidupan yang lebih selesa.
-                </p>
-                <p>
-                  Dilengkapi dengan teknologi rumah pintar berserta sekuriti ketat 24 jam,
-                  kehidupan anda lebih selamat dan terjamin di samping anda mampu menikmati
-                  kehijauan alam semula jadi.
-                </p>
-              </div>
             )}
             <!-- Info table -->
             <section class="desc-section" aria-labelledby="info-lanjut-label">

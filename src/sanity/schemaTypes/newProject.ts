@@ -1,7 +1,7 @@
 import { defineField, defineType } from "sanity";
 import { AutoSlugInput } from "../components/AutoSlugInput";
 import { RegistrationStatusInput } from "../components/RegistrationStatusInput";
-import { LOCATION_OPTIONS, PROPERTY_TYPE_OPTIONS } from "../constants";
+import { AMENITY_ICON_OPTIONS, LOCATION_OPTIONS, PROPERTY_TYPE_OPTIONS } from "../constants";
 
 export const newProject = defineType({
   name: "newProject",
@@ -170,6 +170,17 @@ export const newProject = defineType({
       title: "Tentang Projek",
       type: "array",
       of: [{ type: "block" }],
+    }),
+    // Amenities
+    defineField({
+      name: "amenities",
+      title: "Kemudahan",
+      type: "array",
+      of: [{ type: "string" }],
+      options: {
+        list: AMENITY_ICON_OPTIONS,
+        layout: "grid",
+      },
     }),
     // Admin
     defineField({
