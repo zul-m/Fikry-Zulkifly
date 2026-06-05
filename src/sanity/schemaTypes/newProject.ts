@@ -8,6 +8,7 @@ export const newProject = defineType({
   title: "Projek Baru",
   type: "document",
   fields: [
+    // Identity
     defineField({
       name: "title",
       title: "Nama Projek",
@@ -21,60 +22,24 @@ export const newProject = defineType({
       components: { input: AutoSlugInput },
       validation: (Rule) => Rule.required(),
     }),
+    // Status & CTA
     defineField({
-      name: "developer",
-      title: "Pemaju",
-      type: "string",
+      name: "registrationOpen",
+      title: "Status Pendaftaran",
+      type: "boolean",
+      components: { input: RegistrationStatusInput },
+      initialValue: true,
     }),
     defineField({
-      name: "location",
-      title: "Lokasi",
-      type: "string",
-      options: {
-        list: LOCATION_OPTIONS,
-      },
-      validation: (Rule) => Rule.required(),
+      name: "ctaLink",
+      title: "Pautan WhatsApp",
+      type: "url",
+      validation: (Rule) =>
+        Rule.uri({ scheme: ["https"] }).warning(
+          "Pautan mestilah URL WhatsApp yang sah (https://wa.me/...).",
+        ),
     }),
-    defineField({
-      name: "priceFrom",
-      title: "Harga Dari (RM)",
-      type: "number",
-      validation: (Rule) => Rule.required().positive(),
-    }),
-    defineField({
-      name: "propertyType",
-      title: "Jenis Hartanah",
-      type: "string",
-      options: {
-        list: PROPERTY_TYPE_OPTIONS,
-        layout: "radio",
-      },
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
-      name: "tenure",
-      title: "Pegangan",
-      type: "string",
-      options: {
-        list: [
-          { title: "Pajakan", value: "leasehold" },
-          { title: "Pegangan Bebas", value: "freehold" },
-          { title: "Tanah Rezab Melayu", value: "malay-reserve" },
-        ],
-        layout: "radio",
-      },
-    }),
-    defineField({
-      name: "completionYear",
-      title: "Tahun Siap Jangkaan",
-      type: "number",
-    }),
-    defineField({
-      name: "description",
-      title: "Keterangan",
-      type: "array",
-      of: [{ type: "block" }],
-    }),
+    // Media
     defineField({
       name: "image",
       title: "Imej Utama",
@@ -115,15 +80,98 @@ export const newProject = defineType({
             }),
         },
       ],
-      validation: (Rule) => Rule.min(4).error("Galeri mesti mengandungi sekurang-kurangnya 4 imej."),
+      validation: (Rule) =>
+        Rule.min(4).error(
+          "Galeri mesti mengandungi sekurang-kurangnya 4 imej.",
+        ),
+    }),
+    // Core details
+    defineField({
+      name: "location",
+      title: "Lokasi",
+      type: "string",
+      options: {
+        list: LOCATION_OPTIONS,
+      },
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: "registrationOpen",
-      title: "Status Pendaftaran",
-      type: "boolean",
-      components: { input: RegistrationStatusInput },
-      initialValue: true,
+      name: "propertyType",
+      title: "Jenis Hartanah",
+      type: "string",
+      options: {
+        list: PROPERTY_TYPE_OPTIONS,
+        layout: "radio",
+      },
+      validation: (Rule) => Rule.required(),
     }),
+    defineField({
+      name: "priceFrom",
+      title: "Harga Dari (RM)",
+      type: "number",
+      validation: (Rule) => Rule.required().positive(),
+    }),
+    defineField({
+      name: "developer",
+      title: "Pemaju",
+      type: "string",
+    }),
+    defineField({
+      name: "tenure",
+      title: "Hak Milik",
+      type: "string",
+      options: {
+        list: [
+          { title: "Pajakan", value: "leasehold" },
+          { title: "Pegangan Bebas", value: "freehold" },
+          { title: "Tanah Rezab Melayu", value: "malay-reserve" },
+        ],
+        layout: "radio",
+      },
+    }),
+    defineField({
+      name: "totalUnits",
+      title: "Jumlah Unit",
+      type: "number",
+      validation: (Rule) => Rule.positive().integer(),
+    }),
+    defineField({
+      name: "size",
+      title: "Saiz (kaki persegi)",
+      type: "string",
+    }),
+    defineField({
+      name: "bedrooms",
+      title: "Bilik Tidur",
+      type: "number",
+      validation: (Rule) => Rule.positive().integer(),
+    }),
+    defineField({
+      name: "bathrooms",
+      title: "Bilik Air",
+      type: "number",
+      validation: (Rule) => Rule.positive().integer(),
+    }),
+    defineField({
+      name: "parking",
+      title: "Parkir",
+      type: "number",
+      validation: (Rule) => Rule.positive().integer(),
+    }),
+    defineField({
+      name: "completionYear",
+      title: "Tahun Siap Jangkaan",
+      type: "string",
+      placeholder: "cth. Q4 2027",
+    }),
+    // Content
+    defineField({
+      name: "description",
+      title: "Tentang Projek",
+      type: "array",
+      of: [{ type: "block" }],
+    }),
+    // Admin
     defineField({
       name: "publishedAt",
       title: "Tarikh Diterbitkan",
@@ -138,7 +186,7 @@ export const newProject = defineType({
       media: "image",
     },
     prepare({ title, subtitle, media }) {
-      const loc = LOCATION_OPTIONS.find(l => l.value === subtitle);
+      const loc = LOCATION_OPTIONS.find((l) => l.value === subtitle);
       return { title, subtitle: loc?.title ?? subtitle, media };
     },
   },
