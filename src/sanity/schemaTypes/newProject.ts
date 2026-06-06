@@ -44,19 +44,6 @@ export const newProject = defineType({
       name: "image",
       title: "Imej Utama",
       type: "image",
-      options: { hotspot: true },
-      validation: (Rule) =>
-        Rule.custom(async (value, context) => {
-          if (!value?.asset?._ref) return true;
-          const client = context.getClient({ apiVersion: "2024-01-01" });
-          const size = await client.fetch(`*[_id == $id][0].size`, {
-            id: value.asset._ref,
-          });
-          if (size > 150 * 1024) {
-            return `Saiz imej (${Math.round(size / 1024)} KB) melebihi had 150 KB, sila kompres imej.`;
-          }
-          return true;
-        }),
     }),
     defineField({
       name: "gallery",
@@ -65,19 +52,6 @@ export const newProject = defineType({
       of: [
         {
           type: "image",
-          options: { hotspot: true },
-          validation: (Rule) =>
-            Rule.custom(async (value, context) => {
-              if (!value?.asset?._ref) return true;
-              const client = context.getClient({ apiVersion: "2024-01-01" });
-              const size = await client.fetch(`*[_id == $id][0].size`, {
-                id: value.asset._ref,
-              });
-              if (size > 150 * 1024) {
-                return `Saiz imej (${Math.round(size / 1024)} KB) melebihi had 150 KB, sila kompres imej.`;
-              }
-              return true;
-            }),
         },
       ],
       validation: (Rule) =>

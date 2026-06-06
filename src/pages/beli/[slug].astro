@@ -5,6 +5,7 @@ import { Aperture, ArrowLeft, Baby, Bath, BedDouble, Building2, Car, ChevronDown
 import { sanityClient } from 'sanity:client';
 import '@styles/beli-item.css';
 import { AMENITY_ICON_OPTIONS, LOCATION_OPTIONS, PROPERTY_TYPE_OPTIONS } from '../../sanity/constants';
+import { sanityImageUrl } from '../../sanity/image';
 
 type Block = {
   _type: 'block';
@@ -203,7 +204,7 @@ const amenities = (project.amenities ?? [])
           </a>
           <div class="gallery-track">
             {allImages.map((url) => (
-              <div class="gallery-slide" style={`background-image: url('${url}')`} />
+              <div class="gallery-slide" style={`background-image: url('${sanityImageUrl(url, 1600)}')`} />
             ))}
           </div>
           {allImages.length > 1 && (
@@ -224,7 +225,7 @@ const amenities = (project.amenities ?? [])
                 ]}
                 role="img"
                 aria-label={`${project.title} — gambar ${i + 2}`}
-                style={url ? `background-image: url('${url}')` : undefined}
+                style={url ? `background-image: url('${sanityImageUrl(url, 480)}')` : undefined}
                 data-lightbox-index={url ? imageIndexMap.get(url) : undefined}
               >
                 {isBottomRight && (
@@ -337,7 +338,7 @@ const amenities = (project.amenities ?? [])
         {allImages.map((url, i) => (
           <div class:list={['lightbox-slide', i === 0 && 'is-active']}>
             <img
-              src={url}
+              src={sanityImageUrl(url, 2000)}
               alt={`${project.title} — gambar ${i + 1}`}
               class="lightbox-img"
               draggable="false"
