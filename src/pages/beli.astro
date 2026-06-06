@@ -6,6 +6,7 @@ import PropertyCard from '@components/PropertyCard.astro';
 import { sanityClient } from 'sanity:client';
 import '@styles/beli.css';
 import { LOCATION_OPTIONS, PROPERTY_TYPE_OPTIONS } from '../sanity/constants';
+import { sanityImageUrl } from '../sanity/image';
 
 const locationLabels = Object.fromEntries(LOCATION_OPTIONS.map(o => [o.value, o.title]));
 const typeLabels = Object.fromEntries(PROPERTY_TYPE_OPTIONS.map(o => [o.value, o.title]));
@@ -58,7 +59,7 @@ const properties = rawProjects.map((p) => ({
   priceKey: priceBucket(p.priceFrom),
   price: `RM ${p.priceFrom.toLocaleString("en-MY")}`,
   status: "Projek baru",
-  image: p.imageUrl ?? undefined,
+  image: p.imageUrl ? sanityImageUrl(p.imageUrl, 640) : undefined,
 }));
 
 const crumbs = [
