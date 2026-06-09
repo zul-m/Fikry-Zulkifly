@@ -1,7 +1,7 @@
 ---
 import Layout from '@layouts/Layout.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
-import { Aperture, ArrowLeft, Baby, Bath, BedDouble, Building2, Car, ChevronDown, ChevronLeft, ChevronRight, Dumbbell, Flame, Gamepad2, Goal, Landmark, LayoutGrid, Ruler, ToyBrick, Trees, X } from '@lucide/astro';
+import { Aperture, ArrowLeft, Baby, Bath, BedDouble, Building2, Car, ChevronDown, ChevronLeft, ChevronRight, CloudRain, Dumbbell, Flame, Gamepad2, Goal, Landmark, LayoutGrid, Library, Ruler, School, ShieldCheck, Store, ToyBrick, Trees, Volleyball, WashingMachine, WavesLadder, X } from '@lucide/astro';
 import { sanityClient } from 'sanity:client';
 import '@styles/beli-item.css';
 import { AMENITY_ICON_OPTIONS, LOCATION_OPTIONS, PROPERTY_TYPE_OPTIONS } from '../../sanity/constants';
@@ -160,17 +160,25 @@ const infoRows = [
   { key: 'Jenis',       value: typeLabel },
 ];
 
-const AMENITY_ICON_MAP: Record<string, typeof Dumbbell> = {
-  'dumbbell':     Dumbbell,
-  'trees':        Trees,
-  'flame':        Flame,
-  'building-2':   Building2,
-  'gamepad-2':    Gamepad2,
-  'landmark':     Landmark,
-  'goal':         Goal,
-  'aperture':     Aperture,
-  'baby':         Baby,
-  'toy-brick':    ToyBrick,
+const AMENITY_ICON_MAP: Partial<Record<string, typeof Dumbbell>> = {
+  'dumbbell':        Dumbbell,
+  'trees':           Trees,
+  'flame':           Flame,
+  'building-2':      Building2,
+  'gamepad-2':       Gamepad2,
+  'landmark':        Landmark,
+  'goal':            Goal,
+  'aperture':        Aperture,
+  'baby':            Baby,
+  'toy-brick':       ToyBrick,
+  'waves-ladder':    WavesLadder,
+  'washing-machine': WashingMachine,
+  'store':           Store,
+  'library':         Library,
+  'volleyball':      Volleyball,
+  'school':          School,
+  'cloud-rain':      CloudRain,
+  'shield-check':    ShieldCheck,
 };
 
 const amenities = (project.amenities ?? [])
