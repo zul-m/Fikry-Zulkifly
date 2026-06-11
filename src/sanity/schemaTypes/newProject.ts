@@ -117,20 +117,17 @@ export const newProject = defineType({
     defineField({
       name: "bedrooms",
       title: "Bilik Tidur",
-      type: "number",
-      validation: (Rule) => Rule.positive().integer(),
+      type: "string",
     }),
     defineField({
       name: "bathrooms",
       title: "Bilik Air",
-      type: "number",
-      validation: (Rule) => Rule.positive().integer(),
+      type: "string",
     }),
     defineField({
       name: "parking",
       title: "Parkir",
-      type: "number",
-      validation: (Rule) => Rule.positive().integer(),
+      type: "string",
     }),
     defineField({
       name: "completionYear",
