@@ -1,5 +1,9 @@
 # Fikry Zulkifly - Project Preferences
 
+## Claude Config
+
+All Claude Code configuration for this project — memory files, custom commands, and custom skills — belongs in this repo, not in the user-level Claude config.
+
 ## CSS
 
 - **Mobile-first** — write base styles for the smallest screen first, then layer larger breakpoints with `min-width` queries.
