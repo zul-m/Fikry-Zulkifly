@@ -25,9 +25,9 @@ type Project = {
   tenure: string | null;
   totalUnits: number | null;
   size: string | null;
-  bedrooms: number | null;
-  bathrooms: number | null;
-  parking: number | null;
+  bedrooms: string | null;
+  bathrooms: string | null;
+  parking: string | null;
   completionYear: string | null;
   ctaLink: string | null;
   description: Block[] | null;
@@ -147,17 +147,17 @@ const descriptionHtml = project.description?.length
   : null;
 
 const cardSpecs = [
-  ...(project.bedrooms  != null ? [{ label: 'Bilik tidur', value: String(project.bedrooms),          icon: BedDouble }] : []),
-  ...(project.bathrooms != null ? [{ label: 'Bilik air',   value: String(project.bathrooms),         icon: Bath      }] : []),
-  ...(project.parking   != null ? [{ label: 'Parkir',      value: String(project.parking),           icon: Car       }] : []),
+  ...(project.bedrooms  != null ? [{ label: 'Bilik tidur', value: project.bedrooms,  icon: BedDouble }] : []),
+  ...(project.bathrooms != null ? [{ label: 'Bilik air',   value: project.bathrooms, icon: Bath      }] : []),
+  ...(project.parking   != null ? [{ label: 'Parkir',      value: project.parking,   icon: Car       }] : []),
   ...(project.size      != null ? [{ label: 'Saiz',        value: `${project.size} kp`,              icon: Ruler     }] : []),
 ];
 
 const infoRows = [
   { key: 'Hak milik',   value: tenureLabel },
-  ...(project.bedrooms     != null ? [{ key: 'Bilik tidur',     value: String(project.bedrooms)               }] : []),
-  ...(project.bathrooms    != null ? [{ key: 'Bilik air',       value: String(project.bathrooms)              }] : []),
-  ...(project.parking      != null ? [{ key: 'Parkir',          value: String(project.parking)                }] : []),
+  ...(project.bedrooms     != null ? [{ key: 'Bilik tidur',     value: project.bedrooms    }] : []),
+  ...(project.bathrooms    != null ? [{ key: 'Bilik air',       value: project.bathrooms   }] : []),
+  ...(project.parking      != null ? [{ key: 'Parkir',          value: project.parking     }] : []),
   ...(project.size         != null ? [{ key: 'Saiz',            value: `${project.size} kaki persegi`         }] : []),
   ...(project.totalUnits   != null ? [{ key: 'Jumlah unit',     value: `${project.totalUnits} unit`           }] : []),
   ...(project.completionYear       ? [{ key: 'Tahun siap',      value: project.completionYear                 }] : []),
