@@ -31,17 +31,16 @@ All Claude Code configuration for this project — memory files, custom commands
 
 ### Amenity icons
 
-Icons are sourced from [Lucide](https://lucide.dev). The `value` of each amenity entry is the kebab-case Lucide icon name (e.g. `"goal"`, `"dumbbell"`). The same string is used in three places that must stay in sync:
+Icons are sourced from [Lucide](https://lucide.dev). The `value` of each amenity entry is the kebab-case Lucide icon name (e.g. `"goal"`, `"dumbbell"`). The same string is used in two places that must stay in sync:
 
 | File | Role |
 |---|---|
 | `src/sanity/constants.ts` → `AMENITY_ICON_OPTIONS` | Single source of truth. Defines `{ title, value }` pairs. `title` is the Malay label shown in Studio; `value` is the kebab-case Lucide icon name. |
 | `src/pages/beli/[slug].astro` → `AMENITY_ICON_MAP` | Maps each `value` string to its `@lucide/astro` component for rendering on the frontend. |
-| `src/sanity/components/AmenityIconInput.tsx` | Custom Studio picker. Converts each `value` to PascalCase to look up the icon from `lucide-react`. Greys out icons already assigned to another amenity document. |
 
 **How to add a new amenity icon:**
 
-1. Confirm the icon exists in both `lucide-react` and `@lucide/astro` — they share the same set, but both packages must be checked since the icon may lag between releases.
+1. Confirm the icon exists in `@lucide/astro` — check the package before adding since icons occasionally lag behind the Lucide release.
 2. Add `{ title: "Nama Malay", value: "kebab-icon-name" }` to `AMENITY_ICON_OPTIONS` in `src/sanity/constants.ts`.
 3. Import the PascalCase component from `@lucide/astro` in `src/pages/beli/[slug].astro` and add it to `AMENITY_ICON_MAP`.
 
