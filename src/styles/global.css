@@ -391,9 +391,7 @@
     14rem
   );
 
-  /* --------------------------------------------------------------------------
-     BORDERS & RADIUS
-     -------------------------------------------------------------------------- */
+  /* BORDERS & RADIUS */
 
   --border-width-main: 0.094rem;
 
@@ -401,17 +399,13 @@
   --radius-small: 0.5rem;
   --radius-round: 100vw;
 
-  /* --------------------------------------------------------------------------
-     FOCUS
-     -------------------------------------------------------------------------- */
+  /* FOCUS */
 
   --focus-width: 0.125rem;
   --focus-offset-outer: 0.1875rem;
   --focus-offset-inner: calc(var(--focus-width) * -1);
 
-  /* --------------------------------------------------------------------------
-     COMPONENTS — Navigation
-     -------------------------------------------------------------------------- */
+  /* COMPONENTS — Navigation */
 
   --nav-height: 4rem;
   --nav-banner-height: 2.4rem;
@@ -423,6 +417,10 @@
   --nav-height-total: calc(var(--nav-height) + var(--nav-spacing-vertical));
   --nav-hamburger-thickness: var(--border-width-main);
   --nav-hamburger-gap: var(--space-2);
+
+  /* COMPONENTS — Tag */
+
+  --tag-height: 2.1875rem;
 
   /* THEME TOKENS — Light (default)
      Semantic layer over the primitive swatches. */
@@ -444,9 +442,7 @@
   --theme-text-link-border-hover: var(--theme-text);
 }
 
-/* ==========================================================================
-   THEME — Dark
-   ========================================================================== */
+/* THEME — Dark */
 
 [data-theme="dark"],
 html[data-theme="dark"] {
@@ -461,9 +457,7 @@ html[data-theme="dark"] {
   --theme-text-link-border-hover: var(--color-brand-500);
 }
 
-/* ==========================================================================
-   THEME — Light (explicit attribute, same as default)
-   ========================================================================== */
+/* THEME — Light (explicit attribute, same as default) */
 
 [data-theme="light"] {
   --theme-background: var(--color-light-200);
@@ -478,9 +472,7 @@ html[data-theme="dark"] {
   --theme-text-link-border-hover: var(--theme-text);
 }
 
-/* ==========================================================================
-   THEME — Brand
-   ========================================================================== */
+/* THEME — Brand */
 
 [data-theme="brand"] {
   --theme-background: var(--color-brand-500);
@@ -490,9 +482,7 @@ html[data-theme="dark"] {
   --theme-border: var(--color-brand-text-o20);
 }
 
-/* ==========================================================================
-   CSS RESET & BASE
-   ========================================================================== */
+/* CSS RESET & BASE */
 
 *,
 *::before,
@@ -603,9 +593,7 @@ input:focus-visible {
   outline-offset: var(--focus-offset-outer);
 }
 
-/* ==========================================================================
-   TYPOGRAPHY — Headings
-   ========================================================================== */
+/* TYPOGRAPHY — Headings */
 
 h1,
 h2,
@@ -671,66 +659,6 @@ p {
   content: "";
   display: table;
   margin-bottom: calc(-0.5lh + var(--font-trim-bottom));
-}
-
-/* ==========================================================================
-   UTILITIES — Type size helpers
-   ========================================================================== */
-
-.text-display {
-  font-size: var(--font-size-display);
-  line-height: var(--line-height-small);
-  letter-spacing: var(--letter-spacing-tight);
-}
-.text-large {
-  font-size: var(--font-size-large);
-  line-height: var(--line-height-large);
-}
-.text-small {
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-large);
-}
-.text-body {
-  font-size: var(--font-size-body);
-  line-height: var(--line-height-huge);
-}
-
-/* ==========================================================================
-   UTILITIES — Layout helpers
-   ========================================================================== */
-
-.container {
-  width: 100%;
-  max-width: var(--max-width-main);
-  margin-inline: auto;
-  padding-inline: var(--margin);
-}
-
-.container--small {
-  max-width: var(--max-width-small);
-  margin-inline: auto;
-  padding-inline: var(--margin);
-}
-
-/* ==========================================================================
-   UTILITIES — Section spacing
-   ========================================================================== */
-
-.section {
-  padding-block: var(--section-main);
-}
-.section--none {
-  padding-block: var(--section-none);
-}
-.section--small {
-  padding-block: var(--section-small);
-}
-.section--large {
-  padding-block: var(--section-large);
-}
-.section--page-top {
-  padding-top: var(--section-page-top);
-  padding-bottom: var(--section-main);
 }
 
 /* UTILITIES — Buttons */
