@@ -120,7 +120,12 @@ function renderBlocks(blocks: Block[]): string {
       const inner =
         block.children
           ?.map((child) => {
-            let t = child.text;
+            // Escape first — child.text is untrusted Sanity input fed into set:html.
+            // Any new field added here must also be escaped before interpolation.
+            let t = (child.text ?? '')
+              .replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;');
             if (child.marks?.includes('strong')) t = `<strong>${t}</strong>`;
             if (child.marks?.includes('em')) t = `<em>${t}</em>`;
             return t;
