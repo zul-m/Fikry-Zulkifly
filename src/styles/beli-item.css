@@ -271,13 +271,6 @@
   gap: var(--space-4);
 }
 
-.desc-section-label {
-  font-family: var(--font-family);
-  font-size: var(--font-size-body);
-  line-height: var(--line-height-huge);
-  color: var(--theme-text);
-}
-
 .section-heading {
   font-family: var(--font-family);
   font-size: var(--font-size-h5);
