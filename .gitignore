@@ -26,8 +26,9 @@ dist/
 .wrangler/
 *.sqlite
 
-# CLAUDE CODE
-.claude/
+# CLAUDE CODE — track commands/, ignore everything else
+.claude/*
+!.claude/commands/
 
 # OS / EDITOR
 .DS_Store
