@@ -64,10 +64,12 @@
 }
 
 .sublet-lead {
+  --sublet-lead-max-width: 42rem;
+
   font-size: var(--font-size-large);
   font-weight: var(--font-weight-regular);
   color: var(--color-light-100);
-  max-width: 42rem;
+  max-width: var(--sublet-lead-max-width);
 }
 
 .sublet-scroll {
