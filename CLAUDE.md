@@ -46,9 +46,16 @@ Icons are sourced from [Lucide](https://lucide.dev). The `value` of each amenity
 
 **Why amenities go missing on the slug page:** if `value` in `AMENITY_ICON_MAP` doesn't match what's stored in Sanity, the mapping returns `undefined` and the amenity is silently filtered out. Always keep `AMENITY_ICON_MAP` in sync with `AMENITY_ICON_OPTIONS`.
 
+## Icons
+
+- **Lucide first** — always use `@lucide/astro` components instead of inline `<svg>` elements. Before writing a raw SVG, verify the icon exists in the installed package (`node_modules/@lucide/astro/src/icons/`).
+- Import PascalCase from `@lucide/astro` (e.g. `import { Clock, MoveRight } from '@lucide/astro'`) and render with `<Clock size={20} aria-hidden="true" />`.
+- Only fall back to an inline `<svg>` if the icon genuinely does not exist in `@lucide/astro`.
+
 ## Design System
 
 - All spacing, typography, color, and layout values come from `src/styles/global.css` tokens.
 - Fluid values use the viewport range `20rem (320px) → 90rem (1440px)`.
 - Do not introduce one-off values when a token already covers the intent.
 - **Component tokens stay in the component** — don't add tokens to `global.css` for component-specific styling. Reference existing global tokens (e.g. `var(--color-dark-800)`) directly in the component's `<style>` block. Only add to `global.css` when a value is genuinely shared across multiple components or pages.
+- **Shared utility classes → global.css** — when the same structural CSS block appears (or would appear) on multiple pages, extract it to `global.css` as a utility class rather than duplicating it with page-scoped prefixes. Page-specific overrides (e.g. color) stay in the page CSS file. Example: `.eyebrow` / `.eyebrow-bar` structure lives in `global.css`; each page only adds `color`. Before writing a new prefixed class (e.g. `.sublet-eyebrow`), check `global.css` for an existing utility that covers the same pattern.
