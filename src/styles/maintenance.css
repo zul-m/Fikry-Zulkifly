@@ -54,20 +54,7 @@
   margin-inline: auto;
 }
 .eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-3);
-  font-size: var(--font-size-small);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
   color: var(--lime);
-  margin-bottom: var(--space-5);
-}
-.eyebrow-bar {
-  width: 2.25rem;
-  height: var(--border-width-main);
-  flex: none;
-  background: var(--lime);
 }
 .display {
   font-size: var(--font-size-h1);

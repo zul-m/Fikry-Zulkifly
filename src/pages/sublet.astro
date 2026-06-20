@@ -1,0 +1,25 @@
+---
+import Layout from '@layouts/Layout.astro';
+import { ArrowDown } from '@lucide/astro';
+import '@styles/sublet.css';
+---
+
+<Layout
+  title="Sublet - Sewakan rumah anda tanpa risiko | Fikry Zulkifly"
+  description="Sewakan rumah anda tanpa risiko penyewa lambat bayar atau lari. Sewa bulanan ontime, tiada urusan penyewa, pengurusan penuh oleh perunding hartanah berdaftar LPPEH."
+  navPosition="overlap"
+>
+  <section class="sublet-hero" aria-labelledby="sublet-hero-heading">
+    <div class="sublet-hero-bg" aria-hidden="true"></div>
+    <div class="sublet-hero-overlay" aria-hidden="true"></div>
+    <div class="sublet-hero-inner">
+      <h1 id="sublet-hero-heading">Sewakan rumah anda tanpa risiko</h1>
+      <p class="sublet-lead">
+        Penyewa bayar lambat sewa? Penyewa banyak karenah? Penyewa lari tak bayar sewa? Jom saya jadikan rumah anda sebagai rumah Sublet. Saya tanggung risiko, anda hanya tunggu sewa bulanan.
+      </p>
+      <a class="sublet-scroll" href="#apa-itu-sublet" aria-label="Tatal ke bawah">
+        <ArrowDown size={24} aria-hidden="true" />
+      </a>
+    </div>
+  </section>
+</Layout>
