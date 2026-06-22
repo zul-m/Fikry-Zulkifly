@@ -360,6 +360,8 @@ const amenities = (project.amenities ?? [])
               alt={`${project.title} — gambar ${i + 1}`}
               class="lightbox-img"
               draggable="false"
+              loading={i === 0 ? 'eager' : 'lazy'}
+              width="2000"
             />
           </div>
         ))}
