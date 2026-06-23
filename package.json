@@ -13,12 +13,13 @@
   },
   "dependencies": {
     "@lucide/astro": "^1.16.0",
-    "@sanity/astro": "^3.4.0",
-    "@sanity/vision": "^5.25.1",
+    "@sanity/astro": "^3.4.1",
+    "@sanity/vision": "^6.1.0",
     "astro": "^6.3.1",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "sanity": "^5.14.1"
+    "sanity": "^6.1.0",
+    "styled-components": "^6.4.2"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.2",
@@ -28,5 +29,8 @@
   },
   "engines": {
     "node": ">=24.0.0"
+  },
+  "overrides": {
+    "dompurify": "^3.4.11"
   }
 }
