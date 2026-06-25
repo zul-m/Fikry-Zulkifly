@@ -12,7 +12,7 @@
     "check": "astro check"
   },
   "dependencies": {
-    "@lucide/astro": "^1.16.0",
+    "@lucide/astro": "^1.21.0",
     "@sanity/astro": "^3.4.1",
     "@sanity/vision": "^6.1.0",
     "astro": "^6.3.1",
