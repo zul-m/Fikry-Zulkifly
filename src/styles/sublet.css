@@ -1,9 +1,15 @@
+/* SUBLET — Page wrapper (provides background visible through hero margins) */
+
+.sublet-page {
+  background: var(--color-light-200);
+}
+
 /* SUBLET — Hero section */
 
 .sublet-hero {
   position: relative;
+  z-index: 1;
   min-height: 100dvh;
-  border-radius: 0 0 var(--radius-main) var(--radius-main);
   overflow: hidden;
   background: var(--color-dark-900);
   isolation: isolate;
@@ -48,7 +54,8 @@
   max-width: var(--max-width-main);
   margin-inline: auto;
   padding-inline: var(--margin);
-  padding-block: calc(var(--space-8) + var(--space-8)) calc(var(--space-8) + var(--space-8));
+  padding-block: calc(var(--space-8) + var(--space-8))
+    calc(var(--space-8) + var(--space-8));
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
@@ -90,12 +97,229 @@
 }
 
 @keyframes sublet-scroll-bounce {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  50% { transform: translateX(-50%) translateY(0.375rem); }
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(0.375rem);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .sublet-scroll {
     animation: none;
+  }
+}
+
+/* SUBLET — Apa itu sublet */
+
+.what-is-sublet {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding-block: var(--section-main);
+  background: var(--color-light-200);
+}
+
+.what-is-sublet::-webkit-scrollbar {
+  display: none;
+}
+
+.sublet-reading-space {
+  height: 100dvh;
+}
+
+.what-is-sublet-inner {
+  max-width: var(--max-width-main);
+  margin-inline: auto;
+  padding-inline: var(--margin);
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.what-define {
+  max-width: 52rem;
+}
+
+.what-define h2 {
+  margin-bottom: var(--space-5);
+  color: var(--color-dark-900);
+}
+
+.what-define .define-lead {
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-medium);
+  letter-spacing: var(--letter-spacing-tight);
+  color: var(--color-dark-900);
+  margin-bottom: var(--space-6);
+  text-wrap: pretty;
+}
+
+/* Three-party flow: Anda -> Saya -> Penyewa */
+
+.sublet-flow {
+  margin-top: var(--space-7);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.flow-node {
+  display: flex;
+  flex-direction: column;
+  border: var(--border-width-main) solid var(--theme-border);
+  border-radius: var(--radius-main);
+  overflow: hidden;
+  background: var(--color-light-100);
+  position: relative;
+}
+
+.flow-head {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: var(--space-5) var(--space-6) 0;
+}
+
+.flow-ghost {
+  position: absolute;
+  top: -0.5em;
+  left: var(--space-6);
+  font-size: clamp(9rem, 7rem + 6 * (100vw - 20rem) / 70, 13rem);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: 1;
+  color: color-mix(in srgb, var(--color-dark-900) 16%, transparent);
+  user-select: none;
+  pointer-events: none;
+}
+
+.flow-tag {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.0625rem;
+  margin-top: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-small);
+  background: var(--color-light-200);
+  color: var(--color-dark-900);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  line-height: 1.2;
+}
+
+.flow-tag small {
+  font-size: 0.78em;
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.06em;
+  text-transform: none;
+  color: var(--color-dark-800);
+}
+
+.flow-node--me .flow-tag small {
+  color: color-mix(in srgb, var(--color-light-100) 75%, transparent);
+}
+
+.flow-node--me {
+  background: var(--color-brand-500);
+  border-color: transparent;
+}
+
+.flow-node--me .flow-ghost {
+  color: color-mix(in srgb, var(--color-light-100) 20%, transparent);
+}
+
+.flow-node--me .flow-tag {
+  background: color-mix(in srgb, var(--color-light-100) 16%, transparent);
+  color: var(--color-light-100);
+}
+
+.flow-node--me .flow-body h3,
+.flow-node--me .flow-k {
+  color: var(--color-light-100);
+}
+
+.flow-node--me .flow-body p {
+  color: color-mix(in srgb, var(--color-light-100) 88%, transparent);
+}
+
+.flow-body {
+  flex: 1;
+  margin-top: clamp(1.5rem, 1rem + 2 * (100vw - 20rem) / 70, 3rem);
+  padding: 0 var(--space-6) var(--space-6);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-content: start;
+  column-gap: var(--space-3);
+  row-gap: var(--space-3);
+}
+
+.flow-k {
+  font-size: var(--font-size-h5);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.12;
+  color: var(--color-dark-900);
+}
+
+/* Match the cap-height trim applied to h1-h6/p (global.css) so the
+   number sits flush with the heading's trimmed baseline. */
+.flow-k::before {
+  content: "";
+  display: table;
+  margin-bottom: calc(-0.5lh + var(--font-trim-top));
+}
+
+.flow-k::after {
+  content: "";
+  display: table;
+  margin-bottom: calc(-0.5lh + var(--font-trim-bottom));
+}
+
+.flow-body h3 {
+  font-size: var(--font-size-h5);
+  font-weight: var(--font-weight-bold);
+  margin: 0;
+  color: var(--color-dark-900);
+  line-height: 1.12;
+}
+
+.flow-body p {
+  grid-column: 2;
+  margin: 0;
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-large);
+  color: var(--color-dark-800);
+}
+
+.flow-arrow {
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-brand-500);
+  transform: rotate(90deg);
+  padding-block: var(--space-1);
+}
+
+@media (min-width: 60rem) {
+  .sublet-flow {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    align-items: stretch;
+  }
+
+  .flow-arrow {
+    transform: none;
+    padding-block: 0;
   }
 }
