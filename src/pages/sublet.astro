@@ -1,6 +1,6 @@
 ---
 import Layout from '@layouts/Layout.astro';
-import { ArrowDown } from '@lucide/astro';
+import { ArrowDown, MoveHorizontal } from '@lucide/astro';
 import '@styles/sublet.css';
 ---
 
@@ -9,17 +9,135 @@ import '@styles/sublet.css';
   description="Sewakan rumah anda tanpa risiko penyewa lambat bayar atau lari. Sewa bulanan ontime, tiada urusan penyewa, pengurusan penuh oleh perunding hartanah berdaftar LPPEH."
   navPosition="overlap"
 >
-  <section class="sublet-hero" aria-labelledby="sublet-hero-heading">
-    <div class="sublet-hero-bg" aria-hidden="true"></div>
-    <div class="sublet-hero-overlay" aria-hidden="true"></div>
-    <div class="sublet-hero-inner">
-      <h1 id="sublet-hero-heading">Sewakan rumah anda tanpa risiko</h1>
-      <p class="sublet-lead">
-        Penyewa bayar lambat sewa? Penyewa banyak karenah? Penyewa lari tak bayar sewa? Jom saya jadikan rumah anda sebagai rumah Sublet. Saya tanggung risiko, anda hanya tunggu sewa bulanan.
-      </p>
-      <a class="sublet-scroll" href="#apa-itu-sublet" aria-label="Tatal ke bawah">
-        <ArrowDown size={24} aria-hidden="true" />
-      </a>
-    </div>
-  </section>
+  <div class="sublet-page">
+    <section class="sublet-hero" aria-labelledby="sublet-hero-heading">
+      <div class="sublet-hero-bg" aria-hidden="true"></div>
+      <div class="sublet-hero-overlay" aria-hidden="true"></div>
+      <div class="sublet-hero-inner">
+        <h1 id="sublet-hero-heading">Sewakan rumah anda tanpa risiko</h1>
+        <p class="sublet-lead">
+          Penyewa bayar lambat sewa? Penyewa banyak karenah? Penyewa lari tak bayar sewa? Jom saya jadikan rumah anda sebagai rumah Sublet. Saya tanggung risiko, anda hanya tunggu sewa bulanan.
+        </p>
+        <a class="sublet-scroll" href="#apa-itu-sublet" aria-label="Tatal ke bawah">
+          <ArrowDown size={24} aria-hidden="true" />
+        </a>
+      </div>
+    </section>
+    <section class="what-is-sublet">
+      <div class="what-is-sublet-inner">
+        <div class="what-define">
+          <h2>Apa itu sublet</h2>
+          <p class="define-lead">Sublet bermaksud saya menyewa rumah anda, kemudian menyewakannya semula kepada penyewa lain.</p>
+        </div>
+        <div class="sublet-flow">
+          <article class="flow-node">
+            <div class="flow-head">
+              <span class="flow-ghost" aria-hidden="true">01</span>
+              <span class="flow-tag">Anda<small>Pemilik</small></span>
+            </div>
+            <div class="flow-body">
+              <span class="flow-k" aria-hidden="true">01</span>
+              <h3>Sewakan rumah kepada saya</h3>
+              <p>Terima sewa bulanan tetap setiap awal bulan. Tiada lagi urusan cari penyewa, kutip sewa, atau jaga rumah.</p>
+            </div>
+          </article>
+
+          <span class="flow-arrow" aria-hidden="true">
+            <MoveHorizontal size={28} aria-hidden="true" />
+          </span>
+
+          <article class="flow-node flow-node--me">
+            <div class="flow-head">
+              <span class="flow-ghost" aria-hidden="true">02</span>
+              <span class="flow-tag">Saya<small>Penyewa utama</small></span>
+            </div>
+            <div class="flow-body">
+              <span class="flow-k" aria-hidden="true">02</span>
+              <h3>Tanggung semua risiko</h3>
+              <p>Perunding hartanah berdaftar LPPEH (REN 71735). Saya menjadi penyewa rasmi anda dan uruskan segala kos serta hal harian rumah.</p>
+            </div>
+          </article>
+
+          <span class="flow-arrow" aria-hidden="true">
+            <MoveHorizontal size={28} aria-hidden="true" />
+          </span>
+
+          <article class="flow-node">
+            <div class="flow-head">
+              <span class="flow-ghost" aria-hidden="true">03</span>
+              <span class="flow-tag">Penyewa<small>Pihak ketiga</small></span>
+            </div>
+            <div class="flow-body">
+              <span class="flow-k" aria-hidden="true">03</span>
+              <h3>Berurusan dengan saya</h3>
+              <p>Saya cari &amp; uruskan penyewa. Jika mereka lambat bayar atau lari, ia tanggungan saya sepenuhnya bukan masalah anda.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+    <div id="apa-itu-sublet" class="sublet-reading-space" aria-hidden="true"></div>
+  </div>
 </Layout>
+
+<script>
+  const hero = document.querySelector<HTMLElement>('.sublet-hero');
+  const whatIsSublet = document.querySelector<HTMLElement>('.what-is-sublet');
+  const readingSpace = document.querySelector<HTMLElement>('.sublet-reading-space');
+
+  // Keep reading-space height in sync with section content height
+  function syncReadingSpace() {
+    if (!whatIsSublet || !readingSpace) return;
+    const scrollable = Math.max(0, whatIsSublet.scrollHeight - whatIsSublet.clientHeight);
+    readingSpace.style.height = `${window.innerHeight + scrollable}px`;
+  }
+  syncReadingSpace();
+  new ResizeObserver(syncReadingSpace).observe(document.body);
+
+  if (hero && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const activeHero = hero;
+    const probe = document.createElement('div');
+    probe.style.cssText =
+      'position:fixed;visibility:hidden;pointer-events:none;padding-left:var(--margin);border-radius:var(--radius-main)';
+    document.documentElement.appendChild(probe);
+
+    let maxInset = 0;
+    let maxRadius = 0;
+
+    function measure() {
+      const cs = getComputedStyle(probe);
+      maxInset = parseFloat(cs.paddingLeft);
+      maxRadius = parseFloat(cs.borderTopLeftRadius);
+    }
+    measure();
+    window.addEventListener('resize', () => { measure(); syncReadingSpace(); }, { passive: true });
+
+    let ticking = false;
+
+    function apply() {
+      const progress = Math.min(1, Math.max(0, window.scrollY / window.innerHeight));
+      activeHero.style.marginInline = `${progress * maxInset}px`;
+      activeHero.style.borderRadius = `${progress * maxRadius}px`;
+      activeHero.style.boxShadow =
+        progress > 0
+          ? `0 1rem 3rem color-mix(in srgb, var(--color-dark-900) ${Math.round(progress * 55)}%, transparent)`
+          : '';
+
+      // Sync section content scroll after hero has exited
+      if (whatIsSublet) {
+        whatIsSublet.scrollTop = Math.max(0, window.scrollY - window.innerHeight);
+      }
+
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(apply);
+        ticking = true;
+      }
+    }, { passive: true });
+
+    apply();
+  }
+</script>
