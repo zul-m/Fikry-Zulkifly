@@ -18,5 +18,6 @@ Proceed directly to create a git commit without asking for confirmation. Follow 
 9. Create the commit with a concise subject that matches the repository's existing style.
 10. Push the new branch and set its upstream with `git push -u origin <branch-name>`.
 11. Run `git status` after the push and report the branch name, commit hash, and remote branch URL if available.
+12. After the push succeeds, review the commits since the latest semver tag and report whether a new tag is required. Recommend `patch`, `minor`, `major`, or `skip`, with a one-line rationale and a suggested tag name when applicable. Do not create or push a tag unless the user explicitly asks.
 
 Do not ask the user to confirm before branching, committing, or pushing. Do not force-push, delete branches, or modify remote history.
