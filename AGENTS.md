@@ -1,8 +1,7 @@
-# Fikry Zulkifly - Project Preferences
+# Agent Notes
 
-## Claude Config
-
-All Claude Code configuration for this project — memory files, custom commands, and custom skills — belongs in this repo, not in the user-level Claude config.
+Project conventions and learned facts for any coding agent (Copilot, Claude Code, etc.)
+working in this repo.
 
 ## CSS
 
@@ -19,10 +18,6 @@ All Claude Code configuration for this project — memory files, custom commands
 - **Pages → separate CSS file** — never use `<style>` blocks in page files (e.g. `src/pages/beli.astro`). Put page CSS in `src/styles/beli.css` and import it in the frontmatter with `import '@styles/beli.css'`. One CSS file per page, named to match.
 - **Components → inline `<style>`** — component styles live in a `<style>` block inside the `.astro` file, keeping markup and styles co-located in a single self-contained file.
 - **Components → inline `<script>`** — component-specific scripts live inline in the `.astro` file alongside markup and styles. Only extract to `src/scripts/` when a script is genuinely shared across multiple components or pages, or is large enough to clutter the component file.
-
-## Naming
-
-- **English only for all code identifiers** — class names, IDs, data attributes, CSS custom properties, JS variables, and file names must be in English, even though the site content and copy are in Malay. Never use Malay (or any other language) words as identifiers.
 
 ## Sanity Studio
 
@@ -57,5 +52,70 @@ Icons are sourced from [Lucide](https://lucide.dev). The `value` of each amenity
 - All spacing, typography, color, and layout values come from `src/styles/global.css` tokens.
 - Fluid values use the viewport range `20rem (320px) → 90rem (1440px)`.
 - Do not introduce one-off values when a token already covers the intent.
-- **Component tokens stay in the component** — don't add tokens to `global.css` for component-specific styling. Reference existing global tokens (e.g. `var(--color-dark-800)`) directly in the component's `<style>` block. Only add to `global.css` when a value is genuinely shared across multiple components or pages.
 - **Shared utility classes → global.css** — when the same structural CSS block appears (or would appear) on multiple pages, extract it to `global.css` as a utility class rather than duplicating it with page-scoped prefixes. Page-specific overrides (e.g. color) stay in the page CSS file. Example: `.eyebrow` / `.eyebrow-bar` structure lives in `global.css`; each page only adds `color`. Before writing a new prefixed class (e.g. `.sublet-eyebrow`), check `global.css` for an existing utility that covers the same pattern.
+
+## CSS & Components
+
+- **Component-specific styling stays in the component.** Don't add tokens to
+  `global.css` for single-component use. Reference existing global tokens (e.g.
+  `var(--color-dark-800)`) directly in the component's `<style>` block. Only add to
+  `global.css` when a value is genuinely shared across multiple components/pages.
+
+- **Font trim mechanism (`src/styles/global.css` ~line 651).** A `font trim`
+  mechanism exists: `:is(h1, h2, h3, h4, h5, h6, p)::before/::after` pseudo-elements
+  with `display: table` and `margin-bottom: calc(-0.5lh + var(--font-trim-top|bottom))`
+  pull text up to remove half-leading space above cap-height. Tokens:
+  `--font-trim-top: 0.34em`, `--font-trim-bottom: 0.39em`.
+
+  Any non-heading/non-`<p>` element (e.g. a `<span>` numeral styled at a heading's
+  font-size next to that heading) does NOT get this trim automatically — the
+  selector list is exact tags only. Its text renders visibly lower than an
+  adjacent trimmed heading at the same font-size/line-height, even with identical
+  computed values — looks like a layout bug but isn't.
+
+  Fix: replicate the same `::before`/`::after` trim rule scoped to the custom
+  element's class, reusing the existing `--font-trim-top`/`--font-trim-bottom`
+  tokens (don't invent new ones). Example: `src/styles/sublet.css` `.flow-k` (the
+  "01"/"02"/"03" numerals beside `sublet-flow` card headings) needed this added.
+
+## Naming
+
+- **All code identifiers must be English-only** — class names, IDs, data
+  attributes, CSS custom properties, JS/TS variables, and file names — even
+  though site content/copy is in Malay. Malay is allowed only in visible content
+  and Sanity Studio `title` labels, never as code identifiers.
+  Example: `.buy` not `.beli`, `#contact` not `#hubungi`, `.listings` not `.senarai`.
+
+## Security
+
+- **`renderBlocks` in `src/pages/beli/[slug].astro`** is a hand-rolled Portable
+  Text serializer whose output is passed directly to `set:html`, bypassing
+  Astro's auto-escaping and rendering the string as raw HTML. `child.text` comes
+  from Sanity (editor-controlled) — without escaping, a Sanity editor could type
+  `<script>...</script>` as body text and it lands verbatim in every visitor's
+  browser (stored XSS).
+
+  Rule: any future field added to `renderBlocks` that originates from Sanity
+  must be escaped before interpolation, in this exact order (`&` first, to avoid
+  double-escaping):
+
+  ```js
+  let t = (someField ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  ```
+
+  The HTML tags your own code wraps around it (`<strong>`, `<em>`, `<h2>`, etc.)
+  are controlled strings and do NOT need escaping — only values sourced from
+  Sanity do. This is a convention, not a guarantee: every new addition to
+  `renderBlocks` is a new escape obligation. If the function grows significantly,
+  consider replacing it with `@portabletext/to-html`, which escapes structurally.
+
+## Git & Releases
+
+- **Always draft hand-crafted release notes when suggesting a git tag.** The
+  user dislikes GitHub's default auto-generated release notes. Include a
+  one-line summary + bullet list of notable user-facing changes (not a raw
+  commit log), then a `---` divider, then GitHub's auto-generated PR list, then
+  the **Full Changelog** line. Prepend to GitHub's output — don't replace it.
