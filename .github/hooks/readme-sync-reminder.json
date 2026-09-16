@@ -1,0 +1,12 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "type": "command",
+        "statusMessage": "Checking if README.md needs an update...",
+        "timeout": 10,
+        "command": "INPUT=$(cat); TOOL=$(printf '%s' \"$INPUT\" | jq -r '.tool_name // empty'); case \"$TOOL\" in create_file|replace_string_in_file|multi_replace_string_in_file) ;; *) echo '{}'; exit 0;; esac; PATHS=$(printf '%s' \"$INPUT\" | jq -r '[.. | .filePath? // empty] | map(select(length > 0)) | join(\"\\n\")' 2>/dev/null); MATCH=$(printf '%s' \"$PATHS\" | grep -E 'package\\.json$|astro\\.config|/docs/|src/pages/|schemaTypes/'); if [ -z \"$MATCH\" ]; then echo '{}'; exit 0; fi; CTX=\"Files just changed that README.md may describe: $(printf '%s' \"$MATCH\" | tr '\\n' ',' ). Check whether README.md (tech stack, scripts, structure, or docs links) needs a corresponding update.\"; jq -n --arg ctx \"$CTX\" '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUse\",\"additionalContext\":$ctx}}'"
+      }
+    ]
+  }
+}

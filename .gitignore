@@ -26,9 +26,6 @@ dist/
 .wrangler/
 *.sqlite
 
-# CLAUDE CODE
-.claude/
-
 # OS / EDITOR
 .DS_Store
 Thumbs.db
