@@ -27,7 +27,7 @@
     "@astrojs/react": "^5.0.7",
     "@types/node": "^26.6.5",
     "typescript": "^6.0.3",
-    "wrangler": "^4.149.0"
+    "wrangler": "^4.167.0"
   },
   "engines": {
     "node": ">=24.0.0"
